@@ -408,6 +408,11 @@ function applyLang(code) {
   const msgLbl = document.querySelectorAll("#rsvpForm > label")[1];
   if (msgLbl) { setLabel(msgLbl, t.lblMsg); msgLbl.querySelector("textarea").placeholder = t.phMsg; }
 
+  // havola orqali kiritilgan manzil tarjima qilinmaydi
+  if (CONFIG.customAddress) setText(document.querySelector(".venue-addr"), CONFIG.address);
+  // sanalar CONFIG.dateISO dan, joriy tilda
+  if (typeof applyDates === "function") applyDates(code);
+
   document.documentElement.lang = code;
   document.querySelectorAll("#lang button").forEach(b =>
     b.classList.toggle("on", b.dataset.l === code));
@@ -440,8 +445,8 @@ function todayText() { return (TEXTS[LANG] || TEXTS.uz).countToday; }
     if (b) applyLang(b.dataset.l);
   });
 
-  let saved = null;
-  try { saved = localStorage.getItem("taklifnoma_lang"); } catch (e) {}
+  let saved = (typeof CONFIG !== "undefined" && TEXTS[CONFIG.urlLang]) ? CONFIG.urlLang : null;
+  if (!saved) { try { saved = localStorage.getItem("taklifnoma_lang"); } catch (e) {} }
   if (!saved) {
     if (AUTO_DETECT) {
       const n = (navigator.language || "").slice(0, 2).toLowerCase();

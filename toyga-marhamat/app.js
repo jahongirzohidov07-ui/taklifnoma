@@ -14,6 +14,12 @@ const CONFIG = {
   telegramUser: "jasurbek",                   // t.me/... (@ belgisiz)
   whatsappPhone: "998901234567",              // + belgisiz
 
+  phoneGroom: "+998 90 123 45 67",
+  phoneBride: "+998 91 123 45 67",
+  groomParents: "Baxtiyor aka & Zulfiya opa",
+  brideParents: "Rustam aka & Dilnoza opa",
+  city: "Toshkent",
+
   // Fon musiqasi.
   //   "music/nikoh.mp3" — o'zingiz tashlagan fayl ishlaydi.
   //   Fayl topilmasa, taklifnoma o'zi jonli musiqa chaladi (pastdagi Musiqa bo'limi).
@@ -21,13 +27,8 @@ const CONFIG = {
   musicVolume: 0.34,          // 0 dan 1 gacha
   musicAutoplay: false,       // true qilsangiz, taklifnoma ochilishi bilan yonadi
 
-  meetText: "Baxt bilan",       // mozaika yig'ilgandan keyingi yozuv
-
-  // Fon suratlari — images/ papkasiga shu nomlar bilan tashlang.
-  // Surat bo'lmasa, o'rniga koshin naqshi ko'rinadi (sayt buzilmaydi).
-  //   hero.jpg  — ochilish mozaikasi va bosh sahifa foni
-  //   foto1.jpg — birinchi keng surat lentasi
-  //   foto2.jpg — ikkinchi keng surat lentasi
+  meetText: "Baxt bilan",
+  walkText: "Ikki yurak bir yo'lda uchrashdi...",
 
   // Tilaklar devorida doim turadigan tilaklar
   seedWishes: [
@@ -43,11 +44,144 @@ const $  = (s, r) => (r || document).querySelector(s);
 const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
 const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-/* ============ 1. SOZLAMALARNI QO'LLASH ============ */
+/* ============ 1. HAVOLA ORQALI SOZLASH ================================
+   admin.html shunday havola yasaydi:
+     toyga-marhamat/?kuyov=Jasurbek&kelin=Mohinur&sana=2026-10-17T18:30
+   Havolada bor narsa CONFIG ustidan yoziladi, yo'g'i — CONFIG da qoladi.
+   ==================================================================== */
+(function fromURL() {
+  const p = new URLSearchParams(location.search);
+  const get = k => { const v = p.get(k); return v && v.trim() ? v.trim() : null; };
+  const put = (key, val) => { if (val) CONFIG[key] = val; };
+
+  put("groom", get("kuyov"));
+  put("bride", get("kelin"));
+  put("venue", get("joy"));
+  put("telegramUser", get("tg") && get("tg").replace(/^@/, ""));
+  put("whatsappPhone", get("wa") && get("wa").replace(/\D/g, ""));
+  put("phoneGroom", get("tel1"));
+  put("phoneBride", get("tel2"));
+  put("groomParents", get("kuyovota"));
+  put("brideParents", get("kelinota"));
+  put("city", get("shahar"));
+  put("music", get("mp3"));
+  if (get("manzil")) { CONFIG.address = get("manzil"); CONFIG.customAddress = true; }
+  // "+" havolada bo'shliqqa aylanadi, shuning uchun vaqt mintaqasini o'zimiz qo'shamiz
+  const d = get("sana");
+  if (d) CONFIG.dateISO = /([+-]\d\d:\d\d|Z)$/.test(d) ? d : d.slice(0, 16) + ":00+05:00";
+  if (get("auto") === "1") CONFIG.musicAutoplay = true;
+  CONFIG.urlLang = get("til");
+})();
+
+const ini = s => (String(s || "?").trim()[0] || "?").toUpperCase();
+const cap = s => s ? s[0].toUpperCase() + s.slice(1) : s;
+const pad = n => String(n).padStart(2, "0");
+function escH(s) {
+  return String(s).replace(/[&<>"']/g, m => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m]));
+}
+
+/* ismlar, monogramma, telefonlar — hammasi CONFIG dan */
+function applyNames() {
+  const G = CONFIG.groom, B = CONFIG.bride;
+  const txt = (sel, v) => { const e = $(sel); if (e) e.textContent = v; };
+
+  txt(".sp-names .n1", G);
+  txt(".sp-names .n2", B);
+  const bn = $$(".bn");
+  if (bn[0]) bn[0].textContent = G;
+  if (bn[1]) bn[1].textContent = B;
+
+  const seal = $(".seal-mono");
+  if (seal) seal.innerHTML = ini(G) + "<i>&amp;</i>" + ini(B);
+  txt(".crest-sm text", ini(G) + "&" + ini(B));
+  txt(".mono-l", ini(G));
+  txt(".mono-r", ini(B));
+
+  const sn = $("#stageNames"); if (sn) sn.innerHTML = escH(G) + " &amp; " + escH(B);
+  const mn = $(".mos-names");  if (mn) mn.innerHTML = escH(G) + " <span>&amp;</span> " + escH(B);
+  txt(".foot-names", G + " & " + B);
+  document.documentElement.style.setProperty("--mono", '"' + ini(G) + " & " + ini(B) + '"');
+
+  // ota-onalar kartalari
+  const ch = $$(".card h3");
+  const parents = s => escH(s).replace(/ &amp; /, "<br>&amp; ");
+  if (ch[0]) ch[0].innerHTML = parents(CONFIG.groomParents);
+  if (ch[1]) ch[1].innerHTML = parents(CONFIG.brideParents);
+
+  // aloqa
+  const ct = $$(".ct");
+  [[G, CONFIG.phoneGroom], [B, CONFIG.phoneBride]].forEach(([name, tel], i) => {
+    if (!ct[i]) return;
+    ct[i].href = "tel:" + String(tel).replace(/[^\d+]/g, "");
+    $("b", ct[i]).textContent = name;
+    $("span", ct[i]).textContent = tel;
+  });
+  const vm = $(".venue-meta span");          // birinchi qator — to'yxona telefoni
+  if (vm) { Array.from(vm.childNodes).forEach(n => { if (n.nodeType === 3) n.remove(); });
+            vm.appendChild(document.createTextNode(" " + CONFIG.phoneGroom)); }
+
+  txt(".venue-name", "«" + CONFIG.venue + "»");
+  document.title = "To'yga marhamat — " + G + " & " + B;
+}
+
+/* sana — joriy tilda, CONFIG.dateISO dan hisoblanadi.
+   Intl ishlatilmaydi: ko'p brauzerlarda o'zbek tili ma'lumoti yo'q ("M11", "Sat" chiqadi). */
+const MONTHS = {
+  uz: ["yanvar","fevral","mart","aprel","may","iyun","iyul","avgust","sentabr","oktabr","noyabr","dekabr"],
+  ru: ["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"],
+  en: ["January","February","March","April","May","June","July","August","September","October","November","December"]
+};
+const MONTHS_NOM = {          // "Ноябрь 2026" — rus tilida bosh kelishik boshqacha
+  uz: MONTHS.uz,
+  ru: ["январь","февраль","март","апрель","май","июнь","июль","август","сентябрь","октябрь","ноябрь","декабрь"],
+  en: MONTHS.en
+};
+const DAYS = {
+  uz: ["yakshanba","dushanba","seshanba","chorshanba","payshanba","juma","shanba"],
+  ru: ["воскресенье","понедельник","вторник","среда","четверг","пятница","суббота"],
+  en: ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
+};
+
+/* Toshkent vaqtidagi kun/oy — mehmon qaysi mamlakatda bo'lmasin, sana bir xil */
+function tashkent(date) {
+  const t = new Date(date.getTime() + 5 * 3600e3);
+  return { d: t.getUTCDate(), m: t.getUTCMonth(), y: t.getUTCFullYear(), w: t.getUTCDay() };
+}
+
+function applyDates(lang) {
+  const at = new Date(CONFIG.dateISO);
+  if (isNaN(at)) return;
+  const L = MONTHS[lang] ? lang : "uz";
+  const { d, m, y, w } = tashkent(at);
+  const day = DAYS[L][w], mon = MONTHS[L][m];
+
+  // "21-noyabr" / "21 ноября" / "21 November"
+  const dm = (dd, mm) => L === "uz" ? dd + "-" + MONTHS.uz[mm] : dd + " " + MONTHS[L][mm];
+
+  const hs = $$(".hero-date span");
+  if (hs[0]) hs[0].textContent = cap(day);
+  if (hs[1]) hs[1].textContent = cap(MONTHS_NOM[L][m]) + " " + y;
+  const hb = $(".hero-date b"); if (hb) hb.textContent = d;
+
+  const sp = $(".sp-date"); if (sp) sp.textContent = [pad(d), pad(m + 1), y].join(" · ");
+
+  const ps = $("#s-dastur .subtitle");
+  if (ps) ps.textContent = L === "en" ? day + ", " + d + " " + mon : dm(d, m) + ", " + day;
+
+  const fd = $(".foot-date");
+  if (fd) fd.textContent = (L === "uz" ? d + " " + cap(mon) : d + " " + mon) + " " + y + " · " + CONFIG.city;
+
+  // javob muddati — to'ydan bir hafta oldin
+  const rb = $("#s-rsvp .subtitle b");
+  if (rb) { const k = tashkent(new Date(at.getTime() - 7 * 864e5)); rb.textContent = dm(k.d, k.m); }
+}
+
 (function applyConfig() {
-  $(".mos-sub").textContent = CONFIG.meetText;
-  $(".mos-names").innerHTML = CONFIG.groom + ' <span>&amp;</span> ' + CONFIG.bride;
-  document.title = "Taklifnoma — " + CONFIG.groom + " & " + CONFIG.bride;
+  const mt = $("#meetText"); if (mt) mt.textContent = CONFIG.meetText;
+  const wc = $("#walkCap");  if (wc && CONFIG.walkText) wc.textContent = CONFIG.walkText;
+  const ms = $(".mos-sub");  if (ms) ms.textContent = CONFIG.meetText;
+  applyNames();
+  applyDates("uz");
 
   const q = encodeURIComponent(CONFIG.venue + ", " + CONFIG.address);
   $("#mapFrame").src   = "https://maps.google.com/maps?q=" + q + "&z=16&hl=uz&output=embed";
@@ -183,55 +317,21 @@ function petalLoop() {
   requestAnimationFrame(petalLoop);
 }
 
-/* ============ 3. OCHILISH — KOSHIN MOZAIKASI =========================
-   Surat ekranga plitka-plitka bo'lib uchib keladi, markazdan chetga
-   qarab yig'iladi, choklari oltin bo'lib yonadi va so'ngach butun
-   surat fon bo'lib qoladi.
-   ==================================================================== */
+/* ============ 3. OCHILISH SAHNASI ============ */
 const intro = $("#intro");
 const startPanel = $("#startPanel");
-const mosaic = $("#mosaic");
+const stage = $("#stage");
 const timers = [];
 const T = (fn, ms) => timers.push(setTimeout(fn, ms));
+let trailing = false;
 
-const ASSEMBLE = 2700;          // yig'ilish davomiyligi (ms)
-
-function buildMosaic() {
-  // ba'zi holatlarda (fon oynasi, eski brauzer) innerWidth 0 qaytadi
-  const de = document.documentElement;
-  const W = Math.max(320, innerWidth || de.clientWidth || 360);
-  const H = Math.max(480, innerHeight || de.clientHeight || 640);
-  const aim = W < 600 ? 76 : 104;                  // bitta plitka o'lchami
-  const cols = Math.max(4, Math.ceil(W / aim));
-  const rows = Math.max(5, Math.ceil(H / aim));
-  const tw = W / cols, th = H / rows;
-  const cx = (cols - 1) / 2, cy = (rows - 1) / 2;
-  const maxD = Math.hypot(cx, cy) || 1;
-
-  const frag = document.createDocumentFragment();
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols; c++) {
-      const x = c * tw, y = r * th;
-      const t = document.createElement("div");
-      t.className = "mtile";
-      t.style.cssText =
-        "left:" + x + "px;top:" + y + "px;" +
-        "width:" + (tw + 0.7) + "px;height:" + (th + 0.7) + "px;" +
-        "background-size:" + W + "px " + H + "px,58px 58px;" +
-        "background-position:" + (-x) + "px " + (-y) + "px," + (-x) + "px " + (-y) + "px;";
-      // har bir plitka tasodifiy yo'nalishdan uchib keladi
-      const a = Math.random() * Math.PI * 2;
-      const push = 240 + Math.random() * 460;
-      t.style.setProperty("--dx", Math.round(Math.cos(a) * push) + "px");
-      t.style.setProperty("--dy", Math.round(Math.sin(a) * push) + "px");
-      t.style.setProperty("--r", Math.round((Math.random() - 0.5) * 130) + "deg");
-      // markazdan chetga qarab navbat bilan
-      t.style.transitionDelay = (Math.hypot(c - cx, r - cy) / maxD * 1.2).toFixed(2) + "s";
-      frag.appendChild(t);
-    }
-  }
-  mosaic.innerHTML = "";
-  mosaic.appendChild(frag);
+function trail() {
+  if (!trailing) return;
+  const a = $("#ringA").getBoundingClientRect();
+  const b = $("#ringB").getBoundingClientRect();
+  dust(a.left + a.width / 2, a.top + a.height / 2, 2);
+  dust(b.left + b.width / 2, b.top + b.height / 2, 2);
+  requestAnimationFrame(trail);
 }
 
 function openInvitation() {
@@ -239,40 +339,55 @@ function openInvitation() {
   $("#skipBtn").classList.add("on");
   tryMusic();
 
+  // uzuklar ikki tomondan uchib keladi
   T(() => {
-    buildMosaic();
-    mosaic.classList.add("on");
-    // Boshlang'ich holat majburan hisoblanadi, shundan keyin yig'ilish boshlanadi.
-    // (requestAnimationFrame fon oynasida ishlamaydi — reflow esa doim ishlaydi.)
-    void mosaic.offsetWidth;
-    mosaic.classList.add("set");
+    stage.classList.add("on");
+    $("#walkCap").classList.add("on");
+    T(() => {
+      stage.classList.add("fly");
+      trailing = true; trail();
+    }, 280);
   }, 600);
 
-  T(() => {                                  // surat butun bo'ldi
-    $("#mosFlash").classList.add("on");
-    mosaic.classList.add("seamless", "zoom");
-    burst(innerWidth / 2, innerHeight / 2, 150);
-  }, 600 + ASSEMBLE);
-
-  T(() => $("#mosText").classList.add("on"), 600 + ASSEMBLE + 500);
-  T(reveal, 600 + ASSEMBLE + 3400);
+  // ilashish lahzasi
+  T(lock, 3600);
 }
 
-/* Surat sahifa foniga aylanadi — shuning uchun parda emas, yumshoq o'tish */
+function lock() {
+  trailing = false;
+  stage.classList.add("lock");
+  $("#walkCap").classList.add("off");
+
+  const r = $("#crest").getBoundingClientRect();
+  const cx = r.left + r.width / 2;
+  const cy = r.top + r.height * 0.45;
+  burst(cx, cy, 170);
+  T(() => burst(cx, cy, 90), 240);
+
+  T(() => stage.classList.add("crest-on"), 260);
+  T(() => $("#meetText").classList.add("on"), 1500);
+  T(reveal, 3400);
+}
+
 function reveal() {
-  $("#mosText").classList.remove("on");
-  intro.classList.add("fadeout");
-  document.body.classList.remove("locked");
-  $("#musicBtn").classList.add("show");
-  $("#dots").classList.add("show");
-  initPetals();
-  scan();
-  T(() => intro.classList.add("gone"), 1500);
+  $("#seam").classList.add("on");
+  stage.classList.add("fade");
+  T(() => {
+    intro.classList.add("open");
+    document.body.classList.remove("locked");
+    $("#musicBtn").classList.add("show");
+    $("#dots").classList.add("show");
+    initPetals();
+    scan();
+    T(() => intro.classList.add("gone"), 1800);
+  }, 420);
 }
 
 function skipIntro() {
+  trailing = false;
   timers.forEach(clearTimeout);
   startPanel.classList.add("hide");
+  stage.classList.add("fade");
   reveal();
 }
 
