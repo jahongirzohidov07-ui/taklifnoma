@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Taklifnoma yaratish</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Italiana&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<style>
+:root{
+  --ink:#08203f;--ink2:#0f3560;--gold:#c9a227;--gold-l:#e8c87d;--gold-d:#8a6a22;
+  --cream:#fbf6ea;--paper:#fffdf6;--text:#29241b;--muted:#796c57;--turq:#2f96a6;
+  --line:rgba(8,32,63,.14);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-size:18px;color:var(--text);background:var(--cream)}
+header{
+  background:radial-gradient(120% 140% at 50% 0%,#17497f,#08203f 60%,#04111f);
+  color:var(--cream);text-align:center;padding:42px 20px 36px;border-bottom:1px solid rgba(201,162,39,.4)
+}
+header h1{font-family:'Italiana',serif;font-weight:400;font-size:clamp(28px,6vw,42px);letter-spacing:.14em;margin:0}
+header p{margin:10px 0 0;color:#9fc0ce;font-style:italic}
+main{max-width:1180px;margin:0 auto;padding:34px 20px 70px;display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:32px;align-items:start}
+.panel{background:var(--paper);border:1px solid rgba(201,162,39,.3);padding:30px;box-shadow:0 26px 60px -46px rgba(8,32,63,.7)}
+fieldset{border:0;padding:0;margin:0 0 30px}
+legend{font-family:'Italiana',serif;font-size:22px;letter-spacing:.06em;color:var(--ink2);padding:0;margin-bottom:14px;display:flex;align-items:center;gap:10px;width:100%}
+legend::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(201,162,39,.5),transparent)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.row3{display:grid;grid-template-columns:2fr 1fr;gap:16px}
+label{display:grid;gap:7px;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:16px}
+label .req{color:#a33}
+input[type=text],input[type=tel],input[type=url],input[type=date],input[type=time],textarea{
+  font-family:inherit;font-size:17px;letter-spacing:0;text-transform:none;color:var(--text);
+  padding:12px 13px;border:1px solid var(--line);background:#fdfbf3;outline:none;border-radius:0;width:100%;
+  transition:border-color .3s,box-shadow .3s
+}
+input:focus{border-color:var(--turq);box-shadow:0 0 0 3px rgba(47,150,166,.15)}
+input.bad{border-color:#b33;box-shadow:0 0 0 3px rgba(179,51,51,.12)}
+.hint{font-size:13.5px;color:var(--muted);font-style:italic;letter-spacing:0;text-transform:none;margin-top:-8px;margin-bottom:14px}
+
+.choice{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.choice.c3,.choice.v3{grid-template-columns:repeat(3,1fr)}
+.choice label{margin:0;cursor:pointer}
+.choice input{position:absolute;opacity:0;pointer-events:none}
+.choice span{
+  display:block;padding:14px 12px;border:1px solid var(--line);text-align:center;
+  font-size:15.5px;letter-spacing:.02em;text-transform:none;color:var(--muted);transition:.3s;line-height:1.35
+}
+.choice span small{display:block;font-size:13px;font-style:italic;opacity:.8;margin-top:3px}
+.choice input:checked+span{border-color:var(--gold);background:rgba(201,162,39,.11);color:var(--ink2)}
+.check{display:flex;gap:10px;align-items:center;text-transform:none;letter-spacing:0;font-size:16px;color:var(--text);cursor:pointer}
+.check input{width:18px;height:18px;accent-color:var(--gold-d)}
+#mp3Wrap{display:none}
+#mp3Wrap.on{display:block}
+
+.go{
+  width:100%;padding:18px;border:0;cursor:pointer;font-family:inherit;font-size:15px;letter-spacing:.24em;
+  text-transform:uppercase;color:#1a1a14;background:linear-gradient(180deg,#f0d799,#c9a227);
+  transition:transform .3s,box-shadow .3s,filter .3s
+}
+.go:hover{transform:translateY(-2px);box-shadow:0 16px 34px -18px rgba(201,162,39,.95);filter:brightness(1.05)}
+
+/* natija */
+aside{position:sticky;top:20px}
+.result{display:none}
+.result.on{display:block;animation:up .6s cubic-bezier(.22,1,.36,1)}
+@keyframes up{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.empty{text-align:center;color:var(--muted);font-style:italic;padding:50px 20px;border:1px dashed rgba(201,162,39,.45)}
+.empty b{display:block;font-family:'Italiana',serif;font-style:normal;font-size:22px;color:var(--ink2);margin-bottom:8px;font-weight:400}
+.linkbox{
+  word-break:break-all;font-size:14.5px;line-height:1.5;padding:14px;background:#f6f0e1;
+  border:1px solid rgba(201,162,39,.35);color:var(--ink2);margin-bottom:12px;max-height:120px;overflow:auto
+}
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;padding:13px 10px;cursor:pointer;
+  font-family:inherit;font-size:13px;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;
+  border:1px solid var(--gold);background:none;color:var(--gold-d);transition:.3s
+}
+.btn:hover{background:rgba(201,162,39,.1)}
+.btn.solid{background:var(--ink2);color:var(--cream);border-color:var(--ink2)}
+.btn.solid:hover{background:var(--ink)}
+.btn.tg{border-color:#2aa3df;color:#1c7fb0}
+.btn.wa{border-color:#25a95b;color:#1d8a49}
+.btn.wide{grid-column:1/-1}
+.qr{display:flex;flex-direction:column;align-items:center;gap:8px;margin:18px 0 6px}
+.qr #qrBox svg{width:170px;height:170px;display:block;background:#fff;padding:6px;border:1px solid rgba(201,162,39,.35)}
+.qr small{color:var(--muted);font-style:italic;font-size:14px}
+.phone{
+  margin-top:20px;border:10px solid #111;border-radius:30px;overflow:hidden;
+  aspect-ratio:9/18.5;background:#000;box-shadow:0 30px 60px -30px rgba(0,0,0,.6)
+}
+.phone iframe{width:100%;height:100%;border:0;display:block}
+/* surat ko'rinishlari */
+textarea{resize:vertical;line-height:1.5}
+.ph-main{display:flex;align-items:center;gap:14px;margin:-6px 0 18px}
+.ph-main img{width:74px;height:92px;object-fit:cover;border:1px solid var(--line);background:#efe9dc}
+.ph-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:-6px 0 18px}
+.ph-grid:empty{display:none}
+.ph{position:relative;aspect-ratio:3/4;background:#efe9dc;border:1px solid var(--line);overflow:hidden}
+.ph img{width:100%;height:100%;object-fit:cover;display:block}
+.ph i,.ph-main span{font-style:normal;font-size:13px;letter-spacing:.02em}
+.ph i{position:absolute;right:3px;bottom:3px;padding:1px 6px;background:rgba(255,255,255,.92)}
+.st-ok{color:#1d7a43}.st-bad{color:#b33}.st-wait{color:var(--muted)}
+.howto{background:#f6f0e1;border:1px solid rgba(201,162,39,.3);padding:14px 16px;font-size:15.5px;line-height:1.55;color:var(--text)}
+.howto ol{margin:6px 0 8px;padding-left:20px}
+.howto p{margin:6px 0 0;color:var(--muted)}
+.howto a{color:var(--gold-d)}
+@media (max-width:560px){.ph-grid{grid-template-columns:repeat(3,1fr)}}
+.step-t{font-family:'Italiana',serif;font-size:18px;letter-spacing:.04em;color:var(--ink2);margin:18px 0 8px}
+.step-t:first-of-type{margin-top:4px}
+.step-h{font-size:14.5px;color:var(--muted);font-style:italic;line-height:1.5;margin:4px 0 6px}
+.linkbox.short{font-size:16px;font-weight:600}
+.short-st{font-size:14.5px;margin:-4px 0 10px}
+.link-mini{background:none;border:0;padding:0;color:var(--gold-d);font-family:inherit;font-size:13.5px;text-decoration:underline;cursor:pointer;margin-bottom:6px}
+.gh-set{background:#f6f0e1;border:1px solid rgba(201,162,39,.3);padding:16px 18px 6px}
+.gh-set legend{margin-bottom:6px}
+.gh-st{font-size:15.5px;margin:0 0 10px}
+.gh-set details{margin-bottom:10px}
+.gh-set summary{cursor:pointer;color:var(--gold-d);font-size:15.5px}
+.gh-set ol{font-size:15px;line-height:1.6;padding-left:20px;margin:10px 0}
+.gh-set a{color:var(--gold-d)}
+.gh-row{display:flex;gap:14px;align-items:center;margin:-4px 0 6px}
+.gh-row .btn{flex:none}
+.lbl{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin:0 0 7px}
+.up-row{display:flex;gap:10px;align-items:stretch;margin-bottom:16px;flex-wrap:wrap}
+.up-row input[type=url]{flex:1;min-width:200px}
+.up-btn{
+  display:inline-flex!important;align-items:center;gap:8px;margin:0!important;cursor:pointer;white-space:nowrap;
+  padding:11px 16px;border:1px solid var(--gold);background:#fff;color:var(--gold-d);
+  font-size:15px!important;letter-spacing:.02em!important;text-transform:none!important;transition:.25s
+}
+.up-btn:hover{background:rgba(201,162,39,.1)}
+.up-btn input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.up-btn.off{opacity:.45;filter:grayscale(1)}
+.up-btn.has{background:rgba(29,122,67,.08);border-color:#1d7a43;color:#1d7a43}
+.ph .dev,.ph-main .dev{position:absolute;left:3px;top:3px;font-size:12px;background:rgba(255,255,255,.92);padding:0 5px}
+.ph-main{position:relative}
+.toast{
+  position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);opacity:0;
+  background:var(--ink);color:var(--cream);padding:12px 22px;font-size:15px;transition:.35s;pointer-events:none;
+  border:1px solid rgba(201,162,39,.5);z-index:9
+}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media (max-width:960px){
+  main{grid-template-columns:1fr}
+  aside{position:static}
+}
+@media (max-width:560px){
+  .row,.row3,.choice{grid-template-columns:1fr}
+  .choice.c3{grid-template-columns:repeat(3,1fr)}
+  .choice.v3{grid-template-columns:1fr}
+  .panel{padding:22px 18px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>TAKLIFNOMA YARATISH</h1>
+  <p>Ma'lumotlarni kiriting — «Tayyor» tugmasi tayyor havolani beradi</p>
+</header>
+
+<main>
+  <form class="panel" id="f" novalidate>
+
+    <fieldset class="gh-set" id="ghSet">
+      <legend>Telefondan yuklash</legend>
+      <p class="gh-st st-wait" id="ghSt">Ulanmagan — rasm va musiqani hozircha faqat havola orqali qo'shasiz</p>
+      <details id="ghHelp">
+        <summary>Bir martalik sozlash (2 daqiqa)</summary>
+        <ol>
+          <li><a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">Shu havolani oching</a> — GitHub'ga kirgan bo'lishingiz kerak</li>
+          <li><b>Token name</b>: <i>taklifnoma</i> · <b>Expiration</b>: <i>1 year</i></li>
+          <li><b>Repository access</b> → <i>Only select repositories</i> → <b>taklifnoma</b></li>
+          <li><b>Permissions</b> → <b>Contents</b> → <i>Read and write</i></li>
+          <li>Pastdagi <b>Generate token</b> → chiqqan kodni nusxalab, shu yerga qo'ying</li>
+        </ol>
+        <label>GitHub kaliti<input type="password" id="ghToken" autocomplete="off" spellcheck="false" placeholder="github_pat_..."></label>
+        <div class="gh-row">
+          <button type="button" class="btn" id="ghSave">Saqlash va tekshirish</button>
+          <button type="button" class="link-mini" id="ghForget" hidden>Kalitni o'chirish</button>
+        </div>
+        <p class="hint">Kalit faqat shu qurilmada saqlanadi va hech kimga yuborilmaydi. U faqat «taklifnoma» omboriga fayl yozishga ruxsat beradi. Telefon yo'qolsa — GitHub'da kalitni o'chirib qo'ying.</p>
+      </details>
+    </fieldset>
+
+    <fieldset>
+      <legend>Kelin va kuyov</legend>
+      <div class="row">
+        <label>Kuyov ismi <span class="req">*</span><input type="text" name="kuyov" placeholder="Jasurbek" required></label>
+        <label>Kelin ismi <span class="req">*</span><input type="text" name="kelin" placeholder="Mohinur" required></label>
+      </div>
+      <label>Havola nomi <span class="req">*</span><input type="text" name="slug" placeholder="jasurbek-mohinur" autocapitalize="off" spellcheck="false"></label>
+      <p class="hint">Mijozga boradigan havola: <b id="slugPrev">…/jasurbek-mohinur/</b><br>Ismlardan o'zi to'ldiriladi, xohlasangiz o'zgartirasiz.</p>
+      <div class="row">
+        <label>Kuyovning ota-onasi<input type="text" name="kuyovota" placeholder="Baxtiyor aka & Zulfiya opa"></label>
+        <label>Kelinning ota-onasi<input type="text" name="kelinota" placeholder="Rustam aka & Dilnoza opa"></label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Sana va joy</legend>
+      <div class="row">
+        <label>To'y sanasi <span class="req">*</span><input type="date" name="d" required></label>
+        <label>Boshlanish vaqti <span class="req">*</span><input type="time" name="t" value="18:30" required></label>
+      </div>
+      <label>To'yxona nomi<input type="text" name="joy" placeholder="Baxt saroyi"></label>
+      <div class="row3">
+        <label>Manzil<input type="text" name="manzil" placeholder="Yunusobod tumani, Amir Temur ko'chasi 108"></label>
+        <label>Shahar<input type="text" name="shahar" placeholder="Toshkent"></label>
+      </div>
+      <p class="hint">Manzil xaritada aynan shu matn bo'yicha qidiriladi — qanchalik aniq bo'lsa, shuncha yaxshi.</p>
+    </fieldset>
+
+    <fieldset>
+      <legend>Aloqa va javoblar</legend>
+      <div class="row">
+        <label>Kuyov telefoni<input type="tel" name="tel1" placeholder="+998 90 123 45 67"></label>
+        <label>Kelin telefoni<input type="tel" name="tel2" placeholder="+998 91 123 45 67"></label>
+      </div>
+      <div class="row">
+        <label>Telegram (javob shu yerga)<input type="text" name="tg" placeholder="@jasurbek"></label>
+        <label>WhatsApp raqam<input type="tel" name="wa" placeholder="998901234567"></label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Suratlar</legend>
+      <p class="lbl">Asosiy surat (kelin va kuyov)</p>
+      <div class="up-row">
+        <label class="up-btn"><input type="file" id="fotoFile" accept="image/*">📷 Galereyadan tanlash</label>
+        <input type="url" name="foto" placeholder="yoki havola: https://i.ibb.co/.../surat.jpg">
+      </div>
+      <div class="ph-main" id="fotoPrev" hidden><img alt=""><span></span></div>
+      <p class="lbl">Galereya suratlari — 6 tagacha</p>
+      <div class="up-row">
+        <label class="up-btn"><input type="file" id="galFile" accept="image/*" multiple>📷 Galereyadan tanlash</label>
+        <button type="button" class="link-mini" id="galClear" hidden>Tanlanganlarni olib tashlash</button>
+      </div>
+      <textarea name="gal" rows="3" placeholder="yoki havolalar — har birini yangi qatorga"></textarea>
+      <div class="ph-grid" id="galPrev"></div>
+      <div class="howto">
+        <b>Havola bilan qo'shmoqchi bo'lsangiz</b>
+        <ol>
+          <li><a href="https://imgbb.com/" target="_blank" rel="noopener">imgbb.com</a> ga kiring → <i>Start uploading</i> → suratni tanlang → <i>Upload</i></li>
+          <li>Chiqqan ro'yxatdan <b>Direct links</b> ni tanlang va havolani nusxalang</li>
+          <li>Shu yerga qo'ying — surat yonida ✓ chiqsa, hammasi joyida</li>
+        </ol>
+        <p>Google Drive va Dropbox havolalari ham bo'ladi — fayl <b>«Havolasi bor har kim ko'ra oladi»</b> qilib ochilgan bo'lishi kerak. Telegram va Google Photos havolalari ishlamaydi.</p>
+        <p>Asosiy surat <b>Foto</b> va <b>Klassik</b> variantlarda fon bo'ladi, galereya esa uchalasida ham chiqadi.</p>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Musiqa</legend>
+      <div class="choice">
+        <label><input type="radio" name="mus" value="live" checked><span>Jonli ohang<small>royal va arfa, fayl kerak emas</small></span></label>
+        <label><input type="radio" name="mus" value="mp3"><span>O'z qo'shig'im<small>fayl yoki havola orqali</small></span></label>
+      </div>
+      <div id="mp3Wrap">
+        <div class="up-row">
+          <label class="up-btn"><input type="file" id="mp3File" accept="audio/*,.mp3,.m4a">🎵 Fayldan tanlash</label>
+          <input type="url" name="mp3" placeholder="yoki havola: https://.../qoshiq.mp3">
+        </div>
+        <p class="hint" id="mp3Info">Fayl: mp3 yoki m4a, 20 MB gacha. Havola bo'lsa — to'g'ridan-to'g'ri fayl havolasi bo'lishi kerak (YouTube ishlamaydi).</p>
+      </div>
+      <label class="check"><input type="checkbox" name="auto"> Taklifnoma ochilishi bilan musiqa o'zi yonsin</label>
+    </fieldset>
+
+    <fieldset>
+      <legend>Ko'rinish</legend>
+      <div class="choice v3">
+        <label><input type="radio" name="v" value="toyga-marhamat" checked><span>Oltin uzuklar<small>uzuklar ilashib, girih chiziladi</small></span></label>
+        <label><input type="radio" name="v" value="toyga-marhamat-foto"><span>Foto &amp; mozaika<small>surat plitkalardan yig'iladi</small></span></label>
+        <label><input type="radio" name="v" value="toyga-marhamat-klassik"><span>Klassik oq-oltin<small>to'liq ekranli surat, surib ochiladi</small></span></label>
+      </div>
+      <label style="margin-bottom:8px">Ochilish tili</label>
+      <div class="choice c3">
+        <label><input type="radio" name="til" value="uz" checked><span>O'zbek</span></label>
+        <label><input type="radio" name="til" value="ru"><span>Русский</span></label>
+        <label><input type="radio" name="til" value="en"><span>English</span></label>
+      </div>
+    </fieldset>
+
+    <button class="go" type="submit">Tayyor — havola yaratish</button>
+  </form>
+
+  <aside>
+    <div class="empty" id="empty">
+      <b>Havola shu yerda chiqadi</b>
+      Chapdagi formani to'ldirib, «Tayyor» tugmasini bosing
+    </div>
+
+    <div class="result panel" id="result">
+      <legend>Tayyor taklifnoma</legend>
+
+      <p class="step-t">1. Qisqa havolani faollashtiring</p>
+      <div class="linkbox short" id="shortLink"></div>
+      <p class="short-st st-wait" id="shortSt">Hali faollashtirilmagan</p>
+      <div class="btns">
+        <a class="btn solid wide" id="ghBtn" target="_blank" rel="noopener">GitHub'da faollashtirish</a>
+      </div>
+      <p class="step-h">GitHub ochiladi → pastdagi yashil <b>Commit changes</b> tugmasini bosing. Taxminan 1 daqiqada qisqa havola ishlay boshlaydi va bu yerda <b>✓</b> chiqadi. Shungacha pastdagi havola ham bemalol ishlaydi.</p>
+      <button class="link-mini" type="button" id="copyFile">GitHub fayl matnini o'zi to'ldirmasa — matnni nusxalash</button>
+
+      <p class="step-t">2. Mehmonlarga yuboring</p>
+      <div class="linkbox" id="link"></div>
+      <div class="btns">
+        <button class="btn solid" type="button" id="copy">Nusxalash</button>
+        <a class="btn" id="open" target="_blank" rel="noopener">Ochib ko'rish</a>
+        <a class="btn tg" id="shTg" target="_blank" rel="noopener">Telegram</a>
+        <a class="btn wa" id="shWa" target="_blank" rel="noopener">WhatsApp</a>
+        <button class="btn wide" type="button" id="copyMsg">Xabar matni bilan nusxalash</button>
+      </div>
+      <div class="qr">
+        <div id="qrBox"></div>
+        <small>QR kod — bosma taklifnomaga qo'yish uchun</small>
+      </div>
+      <div class="phone"><iframe id="prev" title="Ko'rinish" loading="lazy"></iframe></div>
+    </div>
+  </aside>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const f = $("#f");
+const KEY = "taklifnoma_admin";
+// sayt ildizi: admin /admin/ papkasida, taklifnomalar bir pog'ona yuqorida
+const HERE = location.href.replace(/[?#].*$/, "").replace(/[^/]*$/, "");
+const BASE = /\/admin\/$/.test(HERE) ? HERE.replace(/admin\/$/, "") : HERE;
+
+/* --- oxirgi kiritilganlarni eslab qolamiz (faqat shu brauzerda) --- */
+function save() {
+  const o = {};
+  new FormData(f).forEach((v, k) => o[k] = v);
+  o.auto = f.auto.checked;
+  try { localStorage.setItem(KEY, JSON.stringify(o)); } catch (e) {}
+}
+function load() {
+  let o = null;
+  try { o = JSON.parse(localStorage.getItem(KEY)); } catch (e) {}
+  if (!o) {
+    // standart sana — bugundan bir oy keyin
+    const d = new Date(Date.now() + 30 * 864e5);
+    f.d.value = d.toISOString().slice(0, 10);
+    return;
+  }
+  for (const k in o) {
+    const el = f.elements[k];
+    if (!el) continue;
+    if (el instanceof RadioNodeList) {
+      Array.from(el).forEach(r => r.checked = r.value === o[k]);
+    } else if (el.type === "checkbox") el.checked = !!o[k];
+    else el.value = o[k];
+  }
+}
+load();
+f.addEventListener("input", save);
+
+/* --- musiqa turi --- */
+function syncMus() { $("#mp3Wrap").classList.toggle("on", f.mus.value === "mp3"); }
+f.addEventListener("change", syncMus);
+syncMus();
+
+/* =====================================================================
+   TELEFONDAN YUKLASH — fayllar «taklifnoma» omboriga to'g'ridan-to'g'ri yoziladi.
+   Kalit faqat shu qurilmada (localStorage) saqlanadi.
+   ===================================================================== */
+const GH_KEY = "taklifnoma_gh";
+const getTok = () => { try { return localStorage.getItem(GH_KEY) || ""; } catch (e) { return ""; } };
+const picked = { foto: null, gal: [], mp3: null };      // tanlangan fayllar (rasmlar allaqachon siqilgan)
+
+async function gh(path, opts) {
+  const r = await fetch("https://api.github.com/repos/" + REPO + path, Object.assign({
+    headers: { Authorization: "Bearer " + getTok(), Accept: "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28" }
+  }, opts || {}));
+  if (r.status === 404 && opts && opts.allow404) return null;
+  if (!r.ok) { const e = new Error("gh " + r.status); e.status = r.status; throw e; }
+  return r.status === 204 ? null : r.json();
+}
+function ghErr(e) {
+  if (!e || !e.status) return "internet aloqasini tekshiring";
+  if (e.status === 401) return "kalit noto'g'ri yoki muddati o'tgan — yangisini yarating";
+  if (e.status === 403 || e.status === 404) return "kalitga «taklifnoma» ombori va «Contents: Read and write» ruxsati berilmagan";
+  if (e.status === 409 || e.status === 422) return "omborda bir vaqtda boshqa o'zgarish bo'ldi — «Tayyor»ni qayta bosing";
+  return "GitHub xatosi (" + e.status + ")";
+}
+function syncGh(state, text) {
+  const has = !!getTok();
+  const st = $("#ghSt");
+  st.className = "gh-st st-" + (state || (has ? "ok" : "wait"));
+  st.textContent = text || (has ? "✓ Ulangan — rasm va musiqani telefondan tanlashingiz mumkin"
+                                 : "Ulanmagan — rasm va musiqani hozircha faqat havola orqali qo'shasiz");
+  $("#ghForget").hidden = !has;
+  $$(".up-btn").forEach(b => b.classList.toggle("off", !has));
+  $$(".up-btn input").forEach(i => { i.disabled = !has; });
+}
+$("#ghSave").addEventListener("click", async () => {
+  const t = $("#ghToken").value.trim();
+  if (!/^(github_pat_|ghp_)\w{20,}$/.test(t)) { toast("Kalit github_pat_ bilan boshlanishi kerak"); return; }
+  try { localStorage.setItem(GH_KEY, t); } catch (e) { toast("Brauzer kalitni saqlashga ruxsat bermadi"); return; }
+  syncGh("wait", "… tekshirilmoqda");
+  try {
+    await gh("/git/ref/heads/main");
+    $("#ghToken").value = "";
+    syncGh();
+    $("#ghHelp").open = false;
+    toast("GitHub ulandi!");
+  } catch (e) {
+    try { localStorage.removeItem(GH_KEY); } catch (x) {}
+    syncGh("bad", "✗ Ulanmadi: " + ghErr(e));
+  }
+});
+$("#ghForget").addEventListener("click", () => {
+  try { localStorage.removeItem(GH_KEY); } catch (e) {}
+  syncGh(); toast("Kalit bu qurilmadan o'chirildi");
+});
+// kalitsiz tanlash tugmasi bosilsa — nima qilish kerakligini ko'rsatamiz
+document.addEventListener("click", e => {
+  const b = e.target.closest(".up-btn.off");
+  if (!b) return;
+  e.preventDefault();
+  $("#ghHelp").open = true;
+  $("#ghSet").scrollIntoView({ behavior: "smooth", block: "start" });
+  toast("Telefondan yuklash uchun avval GitHub'ni ulang (bir marta)");
+}, true);
+
+/* rasmni siqish: eng uzun tomoni 1600px, JPEG — sayt tez ochilsin */
+function compressImage(file) {
+  return new Promise((res, rej) => {
+    const url = URL.createObjectURL(file);
+    const im = new Image();
+    im.onload = () => {
+      const k = Math.min(1, 1600 / Math.max(im.naturalWidth, im.naturalHeight));
+      const c = document.createElement("canvas");
+      c.width = Math.round(im.naturalWidth * k);
+      c.height = Math.round(im.naturalHeight * k);
+      c.getContext("2d").drawImage(im, 0, 0, c.width, c.height);
+      URL.revokeObjectURL(url);
+      c.toBlob(b => b ? res(b) : rej(new Error("rasm")), "image/jpeg", 0.84);
+    };
+    im.onerror = () => { URL.revokeObjectURL(url); rej(new Error("rasm")); };
+    im.src = url;
+  });
+}
+const b64 = blob => new Promise((res, rej) => {
+  const r = new FileReader();
+  r.onload = () => res(String(r.result).split(",")[1]);
+  r.onerror = rej;
+  r.readAsDataURL(blob);
+});
+const mb = n => (n / 1048576).toFixed(1) + " MB";
+
+$("#fotoFile").addEventListener("change", async e => {
+  const file = e.target.files[0]; e.target.value = "";
+  if (!file) return;
+  try { picked.foto = await compressImage(file); }
+  catch (x) { toast("Bu rasmni o'qib bo'lmadi — boshqa surat tanlang"); return; }
+  renderPhotos();
+});
+$("#galFile").addEventListener("change", async e => {
+  const files = Array.from(e.target.files); e.target.value = "";
+  const room = 6 - picked.gal.length;
+  if (files.length > room) toast("Galereyaga ko'pi bilan 6 ta surat — ortiqchasi olinmadi");
+  for (const file of files.slice(0, Math.max(0, room))) {
+    try { picked.gal.push(await compressImage(file)); }
+    catch (x) { toast("Bitta rasmni o'qib bo'lmadi — u o'tkazib yuborildi"); }
+  }
+  renderPhotos();
+});
+$("#galClear").addEventListener("click", () => { picked.gal = []; renderPhotos(); });
+$("#mp3File").addEventListener("change", e => {
+  const file = e.target.files[0]; e.target.value = "";
+  if (!file) return;
+  if (file.size > 20 * 1048576) { toast("Musiqa fayli 20 MB dan katta (" + mb(file.size) + ")"); return; }
+  picked.mp3 = file;
+  showMp3();
+});
+function showMp3() {
+  const btn = $("#mp3File").closest(".up-btn");
+  btn.classList.toggle("has", !!picked.mp3);
+  $("#mp3Info").innerHTML = picked.mp3
+    ? "🎵 <b>" + picked.mp3.name.replace(/[<>&]/g, "") + "</b> · " + mb(picked.mp3.size) + " — «Tayyor» bosilganda yuklanadi"
+    : "Fayl: mp3 yoki m4a, 20 MB gacha. Havola bo'lsa — to'g'ridan-to'g'ri fayl havolasi bo'lishi kerak (YouTube ishlamaydi).";
+}
+
+/* Bir nechta faylni BITTA commit bilan yozish (GitHub Git Data API) */
+async function commitFiles(items, message, progress) {
+  const ref = await gh("/git/ref/heads/main");
+  const base = ref.object.sha;
+  const head = await gh("/git/commits/" + base);
+  const tree = [];
+  for (let i = 0; i < items.length; i++) {
+    if (progress) progress(i + 1, items.length);
+    const it = items[i];
+    const body = it.text != null ? { content: it.text, encoding: "utf-8" } : { content: await b64(it.blob), encoding: "base64" };
+    const blob = await gh("/git/blobs", { method: "POST", body: JSON.stringify(body) });
+    tree.push({ path: it.path, mode: "100644", type: "blob", sha: blob.sha });
+  }
+  const t = await gh("/git/trees", { method: "POST", body: JSON.stringify({ base_tree: head.tree.sha, tree: tree }) });
+  const c = await gh("/git/commits", { method: "POST", body: JSON.stringify({ message: message, tree: t.sha, parents: [base] }) });
+  await gh("/git/refs/heads/main", { method: "PATCH", body: JSON.stringify({ sha: c.sha }) });
+}
+async function ghFileText(path) {
+  const j = await gh("/contents/" + path.split("/").map(encodeURIComponent).join("/") + "?ref=main", { allow404: true });
+  if (!j || !j.content) return null;
+  const bin = atob(j.content.replace(/\n/g, ""));
+  return new TextDecoder().decode(Uint8Array.from(bin, ch => ch.charCodeAt(0)));
+}
+
+/* --- suratlar: havolani to'g'rilash va tekshirish --- */
+function normImg(u) {
+  u = (u || "").trim();
+  if (!u) return "";
+  // Google Drive: ko'rish sahifasi -> to'g'ridan-to'g'ri rasm
+  const m = u.match(/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:export=\w+&)?id=)([\w-]{10,})/);
+  if (m) return "https://drive.google.com/thumbnail?id=" + m[1] + "&sz=w2000";
+  // Dropbox: ?dl=0 -> ?raw=1
+  if (/dropbox\.com/i.test(u)) {
+    try { const x = new URL(u); x.searchParams.delete("dl"); x.searchParams.set("raw", "1"); return x.toString(); } catch (e) {}
+  }
+  return u;
+}
+function badKind(u) {
+  if (!/^https?:\/\//i.test(u)) return "havola https:// bilan boshlanishi kerak";
+  if (/\/\/(t\.me|telegram\.me)\//i.test(u)) return "Telegram havolasi rasm emas";
+  if (/photos\.app\.goo\.gl|photos\.google\.com/i.test(u)) return "Google Photos havolasi ishlamaydi";
+  return "";
+}
+const imgState = {};                    // url -> "ok" | "bad" | "wait"
+function checkImg(url, done) {
+  if (imgState[url] === "ok" || imgState[url] === "bad") return done(imgState[url]);
+  imgState[url] = "wait";
+  const im = new Image();
+  im.onload = () => { imgState[url] = "ok"; done("ok"); };
+  im.onerror = () => { imgState[url] = "bad"; done("bad"); };
+  im.src = url;
+}
+const MARK = { ok: ["✓ ochildi", "st-ok", "✓"], bad: ["✗ ochilmadi", "st-bad", "✗"], wait: ["… tekshirilmoqda", "st-wait", "…"] };
+function galLines() {
+  return (f.gal.value || "").split(/[\n,]+/).map(x => x.trim()).filter(Boolean).slice(0, 6);
+}
+function renderPhotos() {
+  // asosiy surat
+  const box = $("#fotoPrev"), raw = f.foto.value.trim();
+  $("#fotoFile").closest(".up-btn").classList.toggle("has", !!picked.foto);
+  if (picked.foto) {
+    box.hidden = false;
+    box.querySelector("img").src = URL.createObjectURL(picked.foto);
+    const sp = box.querySelector("span");
+    sp.textContent = "📱 telefondan · " + mb(picked.foto.size) + " — «Tayyor» bosilganda yuklanadi";
+    sp.className = "st-ok";
+  } else if (!raw) box.hidden = true;
+  else {
+    box.hidden = false;
+    const url = normImg(raw), why = badKind(url);
+    const span = box.querySelector("span"), img = box.querySelector("img");
+    if (why) { img.removeAttribute("src"); span.textContent = "✗ " + why; span.className = "st-bad"; imgState[url] = "bad"; }
+    else {
+      img.src = url;
+      const show = st => { span.textContent = MARK[st][0]; span.className = MARK[st][1]; };
+      show("wait"); checkImg(url, show);
+    }
+  }
+  // galereya
+  const grid = $("#galPrev");
+  grid.innerHTML = "";
+  $("#galFile").closest(".up-btn").classList.toggle("has", picked.gal.length > 0);
+  $("#galClear").hidden = !picked.gal.length;
+  picked.gal.forEach((blob, i) => {
+    const cell = document.createElement("div"); cell.className = "ph";
+    const im = document.createElement("img"); im.alt = ""; im.src = URL.createObjectURL(blob);
+    const tag = document.createElement("i"); tag.className = "st-ok"; tag.textContent = "📱 " + (i + 1);
+    cell.appendChild(im); cell.appendChild(tag); grid.appendChild(cell);
+  });
+  galLines().slice(0, Math.max(0, 6 - picked.gal.length)).forEach((raw, k) => {
+    const i = picked.gal.length + k;
+    const url = normImg(raw), why = badKind(url);
+    const cell = document.createElement("div"); cell.className = "ph";
+    const tag = document.createElement("i");
+    if (why) { imgState[url] = "bad"; tag.className = "st-bad"; tag.textContent = "✗ " + (i + 1); tag.title = why; }
+    else {
+      const im = document.createElement("img"); im.alt = ""; im.src = url; cell.appendChild(im);
+      const show = st => { tag.className = MARK[st][1]; tag.textContent = MARK[st][2] + " " + (i + 1); };
+      show("wait"); checkImg(url, show);
+    }
+    cell.appendChild(tag); grid.appendChild(cell);
+  });
+}
+let phT;
+["foto", "gal"].forEach(n => f[n].addEventListener("input", () => { clearTimeout(phT); phT = setTimeout(renderPhotos, 500); }));
+renderPhotos();
+syncGh();
+showMp3();
+
+/* --- havola nomi: ismlardan avtomatik --- */
+const CYR = { а:"a",б:"b",в:"v",г:"g",ғ:"g",д:"d",е:"e",ё:"yo",ж:"j",з:"z",и:"i",й:"y",к:"k",қ:"q",л:"l",м:"m",н:"n",о:"o",п:"p",р:"r",с:"s",т:"t",у:"u",ў:"o",ф:"f",х:"x",ҳ:"h",ц:"ts",ч:"ch",ш:"sh",щ:"sh",ъ:"",ы:"i",ь:"",э:"e",ю:"yu",я:"ya" };
+function slugify(s) {
+  return String(s || "").toLowerCase()
+    .replace(/[\u0400-\u04ff]/g, ch => CYR[ch] !== undefined ? CYR[ch] : "")
+    .replace(/['`ʻʼ‘’]/g, "")
+    .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 48);
+}
+const RESERVED = ["admin", "toyga-marhamat", "toyga-marhamat-foto", "toyga-marhamat-klassik", "images", "music", "assets"];
+let slugTouched = !!(f.slug.value.trim());
+function autoSlug() {
+  if (!slugTouched) {
+    const a = slugify(f.kuyov.value), b = slugify(f.kelin.value);
+    f.slug.value = a && b ? a + "-" + b : (a || b);
+  }
+  showSlug();
+}
+function showSlug() {
+  const sl = slugify(f.slug.value) || "...";
+  $("#slugPrev").textContent = BASE.replace(/^https?:\/\//, "") + sl + "/";
+}
+f.kuyov.addEventListener("input", autoSlug);
+f.kelin.addEventListener("input", autoSlug);
+f.slug.addEventListener("input", () => { slugTouched = !!f.slug.value.trim(); showSlug(); });
+f.slug.addEventListener("blur", () => { f.slug.value = slugify(f.slug.value); showSlug(); });
+autoSlug();
+
+/* --- GitHub omborining nomi: <foydalanuvchi>.github.io/<ombor>/ dan aniqlanadi --- */
+const REPO = (() => {
+  const m = location.hostname.match(/^([\w-]+)\.github\.io$/);
+  const seg = location.pathname.split("/").filter(Boolean)[0];
+  return m && seg ? m[1] + "/" + seg : "jahongirzohidov07-ui/taklifnoma";
+})();
+
+/* --- havola yasash --- */
+
+function build(over) {
+  over = over || {};
+  const v = n => (f.elements[n] && f.elements[n].value || "").trim();
+  const p = new URLSearchParams();
+  // ismlar birinchi — havolani o'qiganda darhol ko'rinsin
+  p.set("kuyov", v("kuyov"));
+  p.set("kelin", v("kelin"));
+  p.set("sana", v("d") + "T" + (v("t") || "18:30"));
+  ["joy", "manzil", "shahar", "tel1", "tel2", "tg", "wa", "kuyovota", "kelinota"]
+    .forEach(k => { if (v(k)) p.set(k, v(k)); });
+  const foto = over.foto || (v("foto") ? normImg(v("foto")) : "");
+  if (foto) p.set("foto", foto);
+  (over.g || galLines().map(normImg)).slice(0, 6).forEach(u => p.append("g", u));
+  const mp3 = over.mp3 || v("mp3");
+  if (f.mus.value === "mp3" && mp3) p.set("mp3", mp3);
+  if (f.auto.checked) p.set("auto", "1");
+  if (f.til.value !== "uz") p.set("til", f.til.value);
+  return BASE + f.v.value + "/?" + p.toString();
+}
+
+function validate() {
+  let ok = true, first = null;
+  ["kuyov", "kelin", "d", "t"].forEach(n => {
+    const el = f.elements[n];
+    const bad = !el.value.trim();
+    el.classList.toggle("bad", bad);
+    if (bad) { ok = false; first = first || el; }
+  });
+  if (f.mus.value === "mp3" && !picked.mp3) {
+    const el = f.mp3;
+    const bad = !/^https?:\/\/.+/i.test(el.value.trim());
+    el.classList.toggle("bad", bad);
+    if (bad) { ok = false; first = first || el; }
+  }
+  if (first) { first.focus(); toast("Belgilangan maydonlarni to'ldiring"); return false; }
+
+  f.slug.value = slugify(f.slug.value);
+  if (f.slug.value.length < 3 || RESERVED.includes(f.slug.value)) {
+    f.slug.classList.add("bad"); f.slug.focus();
+    toast(RESERVED.includes(f.slug.value) ? "Bu nom band — boshqasini yozing" : "Havola nomini yozing");
+    return false;
+  }
+  f.slug.classList.remove("bad");
+
+  // suratlar: ochilmaganini mehmonlarga yubormaymiz
+  const main = f.foto.value.trim() ? normImg(f.foto.value) : "";
+  if (main && (badKind(main) || imgState[main] === "bad")) {
+    f.foto.classList.add("bad"); f.foto.focus();
+    toast("Asosiy surat ochilmadi — havolani tekshiring"); return false;
+  }
+  f.foto.classList.remove("bad");
+  const badG = galLines().map(normImg).findIndex(u => badKind(u) || imgState[u] === "bad");
+  if (badG > -1) {
+    f.gal.classList.add("bad"); f.gal.focus();
+    toast((badG + 1) + "-galereya surati ochilmadi — havolani tekshiring"); return false;
+  }
+  f.gal.classList.remove("bad");
+
+  const hasFiles = picked.foto || picked.gal.length || (f.mus.value === "mp3" && picked.mp3);
+  if (hasFiles && !getTok()) {
+    $("#ghHelp").open = true; $("#ghSet").scrollIntoView({ behavior: "smooth" });
+    toast("Telefondan tanlangan fayllarni yuklash uchun GitHub'ni ulang"); return false;
+  }
+  return ok;
+}
+
+let LINK = "", MSG = "", LONG = "", SHORT = "", FILE = "", FPRINT = "", pollT = null, polls = 0;
+
+const MON = ["yanvar","fevral","mart","aprel","may","iyun","iyul","avgust","sentabr","oktabr","noyabr","dekabr"];
+const escA = x => String(x).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+function hash(str) {                       // qisqa barmoq izi — fayl aynan shu taklifnomaniki ekanini bilish uchun
+  let h = 2166136261;
+  for (let k = 0; k < str.length; k++) { h ^= str.charCodeAt(k); h = Math.imul(h, 16777619); }
+  return (h >>> 0).toString(36);
+}
+
+/* juftlik papkasidagi index.html: chiroyli ko'rinish (Telegram/WhatsApp) + taklifnomaga yo'naltirish */
+function coupleFile(rel, G, B, img) {
+  const d = f.d.value.split("-");
+  const when = d.length === 3 ? (+d[2]) + "-" + MON[+d[1] - 1] + ", " + d[0] : "";
+  const where = (f.joy.value || "").trim();
+  const title = G + " & " + B + " — To'yga marhamat";
+  const desc = [when, where].filter(Boolean).join(" · ") || "To'y taklifnomasi";
+  return [
+    "<!DOCTYPE html>",
+    '<html lang="uz">',
+    "<head>",
+    '<meta charset="utf-8">',
+    '<meta name="viewport" content="width=device-width, initial-scale=1">',
+    "<title>" + escA(title) + "</title>",
+    '<meta name="description" content="' + escA(desc) + '">',
+    '<meta property="og:type" content="website">',
+    '<meta property="og:title" content="' + escA(title) + '">',
+    '<meta property="og:description" content="' + escA(desc) + '">',
+    img ? '<meta property="og:image" content="' + escA(img) + '">' : "",
+    img ? '<meta name="twitter:card" content="summary_large_image">' : "",
+    '<meta http-equiv="refresh" content="0; url=' + escA(rel) + '">',
+    "<" + "script>location.replace(" + JSON.stringify(rel) + " + location.hash);<" + "/script>",   // HTML skript ichida bo'laklab yoziladi
+    "<" + "!-- taklifnoma:" + FPRINT + " -->",
+    "</head>",
+    '<body style="margin:0;background:#111"></body>',
+    "</html>",
+    ""
+  ].filter(Boolean).join("\n");
+}
+
+function useLink(url) {
+  LINK = url;
+  const G = f.kuyov.value.trim(), B = f.kelin.value.trim();
+  MSG = "Assalomu alaykum! " + G + " va " + B + "ning to'y marosimiga sizni chin dildan taklif qilamiz.\n\nTaklifnoma: " + LINK;
+  $("#link").textContent = LINK;
+  $("#open").href = LINK;
+  $("#shTg").href = "https://t.me/share/url?url=" + encodeURIComponent(LINK) +
+                    "&text=" + encodeURIComponent("Assalomu alaykum! " + G + " va " + B + "ning to'yiga marhamat!");
+  $("#shWa").href = "https://wa.me/?text=" + encodeURIComponent(MSG);
+  try {
+    const qr = qrcode(0, "M");
+    qr.addData(LINK);
+    qr.make();
+    $("#qrBox").innerHTML = qr.createSvgTag({ cellSize: 4, margin: 2, scalable: true });
+  } catch (err) {
+    $("#qrBox").innerHTML = "<small>QR kod yasab bo'lmadi</small>";
+  }
+}
+
+function setShort(state, text) {
+  const el = $("#shortSt");
+  el.className = "short-st st-" + state;
+  el.textContent = text;
+}
+function stopPoll() { clearInterval(pollT); pollT = null; }
+
+async function checkShort(silent) {
+  let r;
+  try { r = await fetch(SHORT + "?t=" + Date.now(), { cache: "no-store" }); }
+  catch (e) { return false; }
+  if (!r.ok) {
+    if (!silent) setShort("wait", "… kutilmoqda. GitHub'da «Commit changes» bosilganiga ishonch hosil qiling");
+    return false;
+  }
+  const txt = await r.text();
+  if (txt.indexOf("taklifnoma:" + FPRINT) === -1) {
+    stopPoll();
+    setShort("bad", "✗ Bu nomda boshqa taklifnoma bor. «Havola nomi»ni o'zgartiring (masalan, oxiriga yil qo'shing) yoki GitHub'da eski faylni yangilang");
+    return false;
+  }
+  stopPoll();
+  setShort("ok", "✓ Qisqa havola ishlayapti — endi shuni yuboring");
+  $("#ghBtn").hidden = true;
+  useLink(SHORT);
+  toast("Qisqa havola tayyor!");
+  return true;
+}
+
+let busy = false;
+function startPoll() {
+  stopPoll(); polls = 0;
+  pollT = setInterval(() => {
+    if (++polls > 36) { stopPoll(); setShort("wait", "Hali tayyor emas. Bir oz kutib, «Tayyor»ni qayta bosing"); return; }
+    checkShort(true).then(ok => { if (ok) $("#prev").src = LONG + "&preview=1&t=" + Date.now(); });
+  }, 8000);
+}
+
+f.addEventListener("submit", async e => {
+  e.preventDefault();
+  if (busy) return;
+  if (!validate()) return;
+  save();
+  stopPoll();
+
+  const G = f.kuyov.value.trim(), B = f.kelin.value.trim(), slug = f.slug.value;
+  const tok = getTok();
+  const stamp = Date.now().toString(36);      // yangi nom — eski surat keshda qolib ketmasin
+  const dir = "uploads/" + slug + "/";
+  const up = [], over = {};
+
+  if (picked.foto) { const path = dir + "asosiy-" + stamp + ".jpg"; up.push({ path: path, blob: picked.foto }); over.foto = BASE + path; }
+  const gUp = picked.gal.map((blob, k) => { const path = dir + "g" + (k + 1) + "-" + stamp + ".jpg"; up.push({ path: path, blob: blob }); return BASE + path; });
+  over.g = gUp.concat(galLines().map(normImg)).slice(0, 6);
+  if (f.mus.value === "mp3" && picked.mp3) {
+    const ext = ((picked.mp3.name.match(/\.(mp3|m4a|aac|ogg|wav)$/i) || [0, "mp3"])[1]).toLowerCase();
+    const path = dir + "musiqa-" + stamp + "." + ext;
+    up.push({ path: path, blob: picked.mp3 }); over.mp3 = BASE + path;
+  }
+
+  LONG = build(over);
+  SHORT = BASE + slug + "/";
+  const rel = "../" + LONG.slice(BASE.length);
+  FPRINT = hash(rel);
+  FILE = coupleFile(rel, G, B, over.foto || "");
+
+  $("#shortLink").textContent = SHORT.replace(/^https?:\/\//, "");
+  $("#ghBtn").hidden = !!tok;
+  $("#copyFile").hidden = !!tok;
+  $("#ghBtn").href = "https://github.com/" + REPO + "/new/main?filename=" +
+                     encodeURIComponent(slug + "/index.html") + "&value=" + encodeURIComponent(FILE);
+  setShort("wait", tok ? "… tayyorlanmoqda" : "Hali faollashtirilmagan");
+  useLink(LONG);
+  $("#prev").src = LONG + "&preview=1";
+  $("#empty").style.display = "none";
+  $("#result").classList.add("on");
+  if (innerWidth < 960) $("#result").scrollIntoView({ behavior: "smooth", block: "start" });
+
+  if (!tok) { toast("Havola tayyor!"); checkShort(true); return; }
+
+  // --- kalit bor: hammasi avtomatik ---
+  busy = true;
+  const go = $(".go"), goTxt = go.textContent;
+  go.textContent = "Yuklanmoqda…"; go.disabled = true;
+  try {
+    const old = await ghFileText(slug + "/index.html");
+    if (old && old.indexOf("taklifnoma:" + FPRINT) === -1 &&
+        !confirm("«" + slug + "» nomli taklifnoma allaqachon bor.\n\nAgar bu o'sha juftlik bo'lsa — «OK» (yangilanadi).\nBoshqa juftlik bo'lsa — «Bekor qilish» va havola nomini o'zgartiring.")) {
+      setShort("bad", "✗ Bekor qilindi — havola nomini o'zgartirib, «Tayyor»ni qayta bosing");
+      return;
+    }
+    await commitFiles(up.concat([{ path: slug + "/index.html", text: FILE }]),
+      "Taklifnoma: " + G + " & " + B,
+      (k, n) => setShort("wait", "… yuklanmoqda " + k + "/" + n + (up.length ? " (rasm va musiqa)" : "")));
+    setShort("wait", "✓ Saqlandi. Saytga chiqmoqda — taxminan 1 daqiqa, sahifani yopmang…");
+    toast("Saqlandi! Bir daqiqada qisqa havola tayyor bo'ladi");
+    startPoll();
+  } catch (err) {
+    setShort("bad", "✗ Yuklab bo'lmadi: " + ghErr(err));
+  } finally {
+    busy = false; go.textContent = goTxt; go.disabled = false;
+  }
+});
+
+$("#ghBtn").addEventListener("click", () => {
+  setShort("wait", "… GitHub'da «Commit changes» ni bosing, keyin shu yerda kuting");
+  startPoll();
+});
+$("#copyFile").addEventListener("click", () => copy(FILE, "Fayl matni nusxalandi — GitHub'dagi bo'sh maydonga qo'ying"));
+
+/* --- nusxalash --- */
+async function copy(text, okMsg) {
+  try { await navigator.clipboard.writeText(text); }
+  catch (e) {
+    const ta = document.createElement("textarea");
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    try { document.execCommand("copy"); } catch (e2) {}
+    ta.remove();
+  }
+  toast(okMsg);
+}
+$("#copy").addEventListener("click", () => copy(LINK, "Havola nusxalandi"));
+$("#copyMsg").addEventListener("click", () => copy(MSG, "Xabar nusxalandi — istalgan joyga tashlang"));
+
+let tt;
+function toast(m) {
+  const t = $("#toast");
+  t.textContent = m; t.classList.add("on");
+  clearTimeout(tt); tt = setTimeout(() => t.classList.remove("on"), 2200);
+}
+</script>
+</body>
+</html>

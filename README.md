@@ -14,22 +14,31 @@ fon musiqasi (fayl bo'lmasa brauzerning o'zi chaladi).
 
 ## Yangi taklifnoma yaratish — admin panel
 
-**`admin.html`** ni oching → ismlar, sana, to'yxona, telefonlar, musiqani kiriting →
-**«Tayyor»** → tayyor havola chiqadi:
+**`/admin/`** ni oching → ismlar, sana, to'yxona, telefonlar, suratlar va musiqani kiriting →
+**«Tayyor»**. Mijozga boradigan havola faqat juftlik ismidan iborat bo'ladi:
 
 ```
-https://amnnd331-prog.github.io/taklifnoma/toyga-marhamat/?kuyov=Jasurbek&kelin=Mohinur&sana=...
+https://jahongirzohidov07-ui.github.io/taklifnoma/javohir-sevinch/
 ```
 
-Havolani nusxalash, Telegram/WhatsApp orqali yuborish va bosma taklifnoma uchun
-QR kod — o'sha sahifaning o'zida. Har bir to'y uchun alohida fayl yoki kod
-o'zgartirish **kerak emas**: barcha ma'lumot havolaning ichida.
+Telegram/WhatsApp'da bu havola juftlik ismi, sana va surati bilan chiroyli ko'rinadi.
+Havolani nusxalash, yuborish va bosma taklifnoma uchun QR kod — o'sha sahifaning o'zida.
+
+### Suratlar va musiqa — telefondan yoki havola bilan
+
+Ikkala usul ham ishlaydi, aralashtirsa ham bo'ladi:
+
+- **📷 / 🎵 telefondan tanlash** — admin panelga bir marta GitHub kaliti qo'yiladi
+  (yo'riqnoma panelning o'zida). Rasmlar avtomatik siqiladi (eng uzun tomoni 1600px),
+  hammasi `uploads/<juftlik>/` papkasiga bitta commit bilan yoziladi va qisqa havola
+  ham o'zi faollashadi.
+- **havola** — imgbb.com, Google Drive yoki Dropbox. Har bir havola darhol tekshiriladi,
+  ochilmagan surat bilan havola yasalmaydi.
+
+Kalit qo'yilmagan bo'lsa ham panel ishlaydi: qisqa havola uchun GitHub'da bitta
+«Commit changes» tugmasini bosish kifoya.
 
 Mehmonlarning javoblari kiritilgan Telegram/WhatsApp raqamiga keladi.
-
-**Suratlar** ham admin paneldan qo'shiladi: asosiy surat va 6 tagacha galereya
-surati havolasi (imgbb.com, Google Drive yoki Dropbox). Har bir havola darhol
-tekshiriladi, ochilmagan surat bilan havola yasalmaydi.
 
 ## Qo'lda sozlash (ixtiyoriy)
 
