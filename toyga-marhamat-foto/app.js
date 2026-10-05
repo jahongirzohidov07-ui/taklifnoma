@@ -82,6 +82,11 @@ const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
   if (d) CONFIG.dateISO = /([+-]\d\d:\d\d|Z)$/.test(d) ? d : d.slice(0, 16) + ":00+05:00";
   if (get("auto") === "1") CONFIG.musicAutoplay = true;
   CONFIG.urlLang = get("til");
+  // suratlar — faqat http(s) havolalar qabul qilinadi
+  const okUrl = u => (u && /^https?:\/\//i.test(u.trim())) ? u.trim() : null;
+  CONFIG.photo = okUrl(get("foto")) || CONFIG.photo || null;
+  CONFIG.gallery = p.getAll("g").map(okUrl).filter(Boolean).slice(0, 6);
+  CONFIG.fromLink = !!(p.get("kuyov") || p.get("kelin"));
   if (p.get("preview") === "1") CONFIG.preview = true;   // admin paneldagi kichik ko'rinish — musiqasiz
 })();
 
@@ -198,10 +203,37 @@ function applyDates(lang) {
   if (rb) { const k = tashkent(new Date(at.getTime() - 7 * 864e5)); rb.textContent = dm(k.d, k.m); }
 }
 
+/* ============ SURATLAR (admin panelda kiritilgan havolalar) ============ */
+const cssUrl = u => 'url("' + String(u).replace(/["\\\n\r]/g, c => encodeURIComponent(c)) + '")';
+function applyPhotos() {
+  const root = document.documentElement.style;
+  if (CONFIG.photo) {
+    ["--photo", "--photo1", "--photo2"].forEach(v => root.setProperty(v, cssUrl(CONFIG.photo)));
+    new Image().src = CONFIG.photo;                 // oldindan yuklab qo'yamiz
+  }
+  // havola orqali ochilganda umumiy namunaviy suratlar ishlatilmaydi
+  if (!CONFIG.fromLink) return;
+  const imgs = $$(".g img");
+  imgs.forEach((img, i) => {
+    const fig = img.closest("figure");
+    const url = CONFIG.gallery[i];
+    if (!url) { if (fig) fig.hidden = true; return; }
+    img.onload = () => img.classList.remove("missing");
+    img.onerror = () => img.classList.add("missing");
+    img.classList.remove("missing");
+    img.src = url;
+    const cap = fig && fig.querySelector("figcaption");
+    if (cap) cap.hidden = true;                      // umumiy izohlar begona suratga to'g'ri kelmaydi
+  });
+  const sec = $("#s-galereya");
+  if (sec) sec.hidden = CONFIG.gallery.length === 0;
+}
+
 (function applyConfig() {
   const mt = $("#meetText"); if (mt) mt.textContent = CONFIG.meetText;
   const wc = $("#walkCap");  if (wc && CONFIG.walkText) wc.textContent = CONFIG.walkText;
   const ms = $(".mos-sub");  if (ms) ms.textContent = CONFIG.meetText;
+  applyPhotos();
   applyNames();
   applyDates("uz");
 
@@ -372,9 +404,11 @@ function buildMosaic() {
       t.className = "mtile";
       t.style.cssText =
         "left:" + x + "px;top:" + y + "px;" +
-        "width:" + (tw + 0.7) + "px;height:" + (th + 0.7) + "px;" +
-        "background-size:" + W + "px " + H + "px,58px 58px;" +
-        "background-position:" + (-x) + "px " + (-y) + "px," + (-x) + "px " + (-y) + "px;";
+        "width:" + (tw + 0.7) + "px;height:" + (th + 0.7) + "px;";
+      // ichidagi surat: bosh sahifa foni (inset:-14% 0) bilan bir xil o'lcham va joy
+      const ph = document.createElement("i");
+      ph.style.cssText = "left:" + (-x) + "px;top:" + (-y - 0.14 * H) + "px;width:" + W + "px;height:" + (1.28 * H) + "px;";
+      t.appendChild(ph);
       // har bir plitka tasodifiy yo'nalishdan uchib keladi
       const a = Math.random() * Math.PI * 2;
       const push = 240 + Math.random() * 460;

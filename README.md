@@ -27,6 +27,10 @@ o'zgartirish **kerak emas**: barcha ma'lumot havolaning ichida.
 
 Mehmonlarning javoblari kiritilgan Telegram/WhatsApp raqamiga keladi.
 
+**Suratlar** ham admin paneldan qo'shiladi: asosiy surat va 6 tagacha galereya
+surati havolasi (imgbb.com, Google Drive yoki Dropbox). Har bir havola darhol
+tekshiriladi, ochilmagan surat bilan havola yasalmaydi.
+
 ## Qo'lda sozlash (ixtiyoriy)
 
 Har bir papkada:
