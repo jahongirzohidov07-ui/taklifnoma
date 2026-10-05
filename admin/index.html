@@ -205,7 +205,7 @@ textarea{resize:vertical;line-height:1.5}
       <legend>Sana va joy</legend>
       <div class="row">
         <label>To'y sanasi <span class="req">*</span><input type="date" name="d" required></label>
-        <label>Boshlanish vaqti <span class="req">*</span><input type="time" name="t" value="18:30" required></label>
+        <label>Boshlanish vaqti, 24 soatlik <span class="req">*</span><input type="text" name="t" value="18:30" inputmode="numeric" maxlength="5" autocomplete="off" placeholder="18:30"></label>
       </div>
       <label>To'yxona nomi<input type="text" name="joy" placeholder="Baxt saroyi"></label>
       <div class="row3">
@@ -330,6 +330,19 @@ textarea{resize:vertical;line-height:1.5}
 const $ = s => document.querySelector(s);
 const $$ = s => Array.from(document.querySelectorAll(s));
 const f = $("#f");
+
+/* Vaqt: 24 soatlik (AM/PM yo'q). Faqat raqam yoziladi — "1830" avtomatik "18:30" bo'ladi. */
+const okTime = v => /^([01][0-9]|2[0-3]):[0-5][0-9]$/.test(v);
+function fmtTime(raw, final) {
+  let d = String(raw).replace(/[^0-9]/g, "").slice(0, 4);
+  if (final) {
+    if (d.length === 1 || d.length === 2) d = d.padStart(2, "0") + "00";   // "9" -> 09:00, "18" -> 18:00
+    else if (d.length === 3) d = "0" + d;                                   // "930" -> 09:30
+  }
+  return d.length > 2 ? d.slice(0, 2) + ":" + d.slice(2) : d;
+}
+f.t.addEventListener("input", () => { f.t.value = fmtTime(f.t.value, false); });
+f.t.addEventListener("blur", () => { f.t.value = fmtTime(f.t.value, true); });
 const KEY = "taklifnoma_admin";
 // sayt ildizi: admin /admin/ papkasida, taklifnomalar bir pog'ona yuqorida
 const HERE = location.href.replace(/[?#].*$/, "").replace(/[^/]*$/, "");
@@ -663,6 +676,8 @@ function validate() {
     el.classList.toggle("bad", bad);
     if (bad) { ok = false; first = first || el; }
   });
+  f.t.value = fmtTime(f.t.value, true);
+  if (!okTime(f.t.value)) { f.t.classList.add("bad"); ok = false; first = first || f.t; }
   if (f.mus.value === "mp3" && !picked.mp3) {
     const el = f.mp3;
     const bad = !/^https?:\/\/.+/i.test(el.value.trim());
