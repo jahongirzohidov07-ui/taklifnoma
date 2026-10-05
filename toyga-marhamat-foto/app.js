@@ -82,6 +82,7 @@ const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
   if (d) CONFIG.dateISO = /([+-]\d\d:\d\d|Z)$/.test(d) ? d : d.slice(0, 16) + ":00+05:00";
   if (get("auto") === "1") CONFIG.musicAutoplay = true;
   CONFIG.urlLang = get("til");
+  if (p.get("preview") === "1") CONFIG.preview = true;   // admin paneldagi kichik ko'rinish — musiqasiz
 })();
 
 const ini = s => (String(s || "?").trim()[0] || "?").toUpperCase();
@@ -692,7 +693,7 @@ const Synth = (function () {
       on = true; bar = 0; next = ctx.currentTime + 0.15;
       master.gain.cancelScheduledValues(ctx.currentTime);
       master.gain.setValueAtTime(0.0001, ctx.currentTime);
-      master.gain.linearRampToValueAtTime(vol, ctx.currentTime + 3.5);
+      master.gain.linearRampToValueAtTime(vol, ctx.currentTime + 1.2);
       scheduleBar();
       return true;
     },
@@ -711,6 +712,7 @@ const Synth = (function () {
 })();
 
 let mode = null;            // "file" | "synth" | null (hali aniqlanmagan)
+let want = false;           // foydalanuvchi musiqani yoqmoqchimi — tugma shunga qaraydi
 const VOL = CONFIG.musicVolume;
 
 function fadeInFile() {
@@ -730,11 +732,14 @@ function probeAndPlay() {
   const toSynth = () => {
     if (settled) return;
     settled = true; mode = "synth";
+    if (!want) return;                  // shu orada o'chirib qo'yilgan bo'lsa
     Synth.start(VOL * 0.5); mBtn.classList.add("playing");
   };
   audio.addEventListener("canplay", () => {
     if (settled) return;
-    settled = true; mode = "file"; fadeInFile();
+    settled = true; mode = "file";
+    if (!want) { try { audio.pause(); } catch (e) {} return; }
+    fadeInFile();
   }, { once: true });
   audio.addEventListener("error", toSynth, { once: true });
 
@@ -749,12 +754,15 @@ function musicPlaying() {
   return mode === "synth" ? Synth.playing : (mode === "file" ? !audio.paused : false);
 }
 function startMusic() {
+  if (CONFIG.preview) return;
+  want = true;
   Synth.prepare();
   if (mode === "synth") { Synth.start(VOL * 0.5); mBtn.classList.add("playing"); return; }
   if (mode === "file")  { audio.play().catch(() => {}); fadeInFile(); mBtn.classList.add("playing"); return; }
   probeAndPlay();
 }
 function stopMusic() {
+  want = false;
   if (mode === "synth") Synth.stop();
   else { try { audio.pause(); } catch (e) {} }
   mBtn.classList.remove("playing");
@@ -763,14 +771,20 @@ function stopMusic() {
 /* Muhr bosilganda chaqiriladi.
    Tugma DARHOL ko'rinadi — mehmon istalgan payt o'chira (yoki yoqa) oladi. */
 function tryMusic() {
+  if (CONFIG.preview) return;
   Synth.prepare();
   mBtn.classList.add("show");
   if (CONFIG.musicAutoplay) startMusic();
 }
 
 mBtn.addEventListener("click", () => {
-  if (musicPlaying()) stopMusic(); else startMusic();
+  if (want) stopMusic(); else startMusic();
 });
+/* Boshqa tabga o'tilsa yoki sahifa yopilsa — musiqa to'xtaydi.
+   Aks holda u ko'rinmaydigan tabda chalinib qolardi. */
+document.addEventListener("visibilitychange", () => { if (document.hidden && want) stopMusic(); });
+addEventListener("pagehide", () => { if (want) stopMusic(); });
+
 
 /* ============ 11. SILLIQ O'TISH ============ */
 $$('a[href^="#"]').forEach(a => a.addEventListener("click", e => {

@@ -63,6 +63,7 @@ const CONFIG = {
   if (d) CONFIG.dateISO = /([+-]\d\d:\d\d|Z)$/.test(d) ? d : d.slice(0, 16) + ":00+05:00";
   if (get("auto") === "1") CONFIG.musicAutoplay = true;
   CONFIG.urlLang = get("til");
+  if (p.get("preview") === "1") CONFIG.preview = true;   // admin paneldagi kichik ko'rinish — musiqasiz
 })();
 
 /* ============ MATNLAR — UCH TILDA ============ */
@@ -347,7 +348,7 @@ function openCover() {
   if (opened) return;
   opened = true;
   Synth.prepare();
-  $("#music").hidden = false;
+  $("#music").hidden = !!CONFIG.preview;
   if (CONFIG.musicAutoplay) startMusic();
   const r = slider.getBoundingClientRect();
   burst(r.left + r.width / 2, r.top, 120);
@@ -417,7 +418,7 @@ const Synth = (function () {
       on = true; bar = 0; next = ctx.currentTime + .15;
       out.gain.cancelScheduledValues(ctx.currentTime);
       out.gain.setValueAtTime(.0001, ctx.currentTime);
-      out.gain.linearRampToValueAtTime(v, ctx.currentTime + 3.5);
+      out.gain.linearRampToValueAtTime(v, ctx.currentTime + 1.2);
       sched(); return true;
     },
     stop() {
@@ -432,7 +433,7 @@ const Synth = (function () {
 })();
 
 const audio = $("#audio"), mus = $("#music");
-let mode = null;
+let mode = null, want = false;
 function fadeIn() {
   let v = 0;
   const id = setInterval(() => {
@@ -442,15 +443,22 @@ function fadeIn() {
     if (v >= CONFIG.musicVolume) clearInterval(id);
   }, 130);
 }
-function toSynth() { mode = "synth"; Synth.start(CONFIG.musicVolume * .5); mus.classList.add("on"); }
+function toSynth() { mode = "synth"; if (!want) return; Synth.start(CONFIG.musicVolume * .5); mus.classList.add("on"); }
 function startMusic() {
+  if (CONFIG.preview) return;
+  want = true;
   Synth.prepare();
   if (mode === "synth") return toSynth();
   if (mode === "file") { audio.play().catch(() => {}); fadeIn(); mus.classList.add("on"); return; }
   if (!CONFIG.music) return toSynth();
   let done = false;
   const fail = () => { if (!done) { done = true; toSynth(); } };
-  audio.addEventListener("canplay", () => { if (!done) { done = true; mode = "file"; fadeIn(); } }, { once: true });
+  audio.addEventListener("canplay", () => {
+    if (done) return;
+    done = true; mode = "file";
+    if (!want) { try { audio.pause(); } catch (e) {} return; }
+    fadeIn();
+  }, { once: true });
   audio.addEventListener("error", fail, { once: true });
   try { audio.volume = 0; } catch (e) {}
   const pr = audio.play();
@@ -459,13 +467,16 @@ function startMusic() {
   setTimeout(fail, 2500);
 }
 function stopMusic() {
+  want = false;
   if (mode === "synth") Synth.stop(); else { try { audio.pause(); } catch (e) {} }
   mus.classList.remove("on");
 }
-$("#musicBtn").addEventListener("click", () => {
-  const playing = mode === "synth" ? Synth.playing : (mode === "file" && !audio.paused);
-  playing ? stopMusic() : startMusic();
-});
+$("#musicBtn").addEventListener("click", () => { want ? stopMusic() : startMusic(); });
+/* Boshqa tabga o'tilsa yoki sahifa yopilsa — musiqa to'xtaydi.
+   Aks holda u ko'rinmaydigan tabda chalinib qolardi. */
+document.addEventListener("visibilitychange", () => { if (document.hidden && want) stopMusic(); });
+addEventListener("pagehide", () => { if (want) stopMusic(); });
+
 
 /* ============ TILAKLAR DEVORI ============ */
 const KEY = "taklifnoma_klassik_tilaklar";

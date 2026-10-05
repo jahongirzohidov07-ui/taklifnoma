@@ -307,7 +307,7 @@ f.addEventListener("submit", e => {
   $("#shTg").href = "https://t.me/share/url?url=" + encodeURIComponent(LINK) +
                     "&text=" + encodeURIComponent("Assalomu alaykum! " + G + " va " + B + "ning to'yiga marhamat!");
   $("#shWa").href = "https://wa.me/?text=" + encodeURIComponent(MSG);
-  $("#prev").src = LINK;
+  $("#prev").src = LINK + "&preview=1";   // ko'rinish oynasida musiqa chalinmaydi
 
   // QR kod
   try {
