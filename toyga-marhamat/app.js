@@ -53,6 +53,12 @@ const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const p = new URLSearchParams(location.search);
   const get = k => { const v = p.get(k); return v && v.trim() ? v.trim() : null; };
   const put = (key, val) => { if (val) CONFIG[key] = val; };
+  // Havola orqali ochilgan bo'lsa — namunaviy telefon va ismlar chiqmasin,
+  // faqat admin panelda kiritilganlar ko'rsatilsin.
+  if (p.get("kuyov") || p.get("kelin")) {
+    ["phoneGroom", "phoneBride", "telegramUser", "whatsappPhone", "groomParents", "brideParents"]
+      .forEach(k => { CONFIG[k] = ""; });
+  }
 
   put("groom", get("kuyov"));
   put("bride", get("kelin"));
@@ -122,6 +128,16 @@ function applyNames() {
 
   txt(".venue-name", "«" + CONFIG.venue + "»");
   document.title = "To'yga marhamat — " + G + " & " + B;
+
+  // bo'sh qolgan joylar yashiriladi
+  const oila = $("#s-oila");
+  if (oila) oila.hidden = !CONFIG.groomParents && !CONFIG.brideParents;
+  if (ch[0]) ch[0].closest(".card").hidden = !CONFIG.groomParents;
+  if (ch[1]) ch[1].closest(".card").hidden = !CONFIG.brideParents;
+  const mid = $(".card-mid"); if (mid) mid.hidden = !(CONFIG.groomParents && CONFIG.brideParents);
+  ct.forEach((c, i) => { c.hidden = ![CONFIG.phoneGroom, CONFIG.phoneBride][i]; });
+  const aloqa = $("#s-aloqa"); if (aloqa) aloqa.hidden = !CONFIG.phoneGroom && !CONFIG.phoneBride;
+  if (vm) vm.hidden = !CONFIG.phoneGroom;
 }
 
 /* sana — joriy tilda, CONFIG.dateISO dan hisoblanadi.
@@ -527,6 +543,8 @@ $("#rsvpForm").addEventListener("submit", e => {
   const enc = encodeURIComponent(text);
   $("#sendTg").href = "https://t.me/" + CONFIG.telegramUser + "?text=" + enc;
   $("#sendWa").href = "https://wa.me/" + CONFIG.whatsappPhone + "?text=" + enc;
+  $("#sendTg").hidden = !CONFIG.telegramUser;
+  $("#sendWa").hidden = !CONFIG.whatsappPhone;
 
   e.target.style.display = "none";
   $("#sent").classList.add("on");

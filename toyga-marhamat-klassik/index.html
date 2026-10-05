@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>To'yga marhamat</title>
+<meta name="description" content="To'y marosimiga taklifnoma">
+<meta name="theme-color" content="#1a1a1a">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Great+Vibes&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="locked">
+
+<svg class="sprite" aria-hidden="true">
+  <defs>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20.4C6.2 16.4 3.2 13.3 3.2 9.7A4.7 4.7 0 0 1 12 7a4.7 4.7 0 0 1 8.8 2.7c0 3.6-3 6.7-8.8 10.7z"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2.2"/><path d="M8.2 10.5V8a3.8 3.8 0 0 1 7.6 0v2.5"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h13M13 6.5 18.5 12 13 17.5"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21.2s6.8-6.6 6.8-11A6.8 6.8 0 1 0 5.2 10.2c0 4.4 6.8 11 6.8 11z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+    <symbol id="i-glass" viewBox="0 0 24 24"><path d="M5 4h14l-7 8.5zM12 12.5V20M8 20.5h8M8.4 8.2h7.2"/></symbol>
+    <symbol id="i-rings" viewBox="0 0 24 24"><circle cx="9" cy="14.5" r="5"/><circle cx="15.2" cy="12.6" r="5"/><path d="M13.6 4.2h3.4l1.4 2.2-3.1 2.2-3.1-2.2z"/></symbol>
+    <symbol id="i-cloche" viewBox="0 0 24 24"><path d="M3 17.5h18M4.5 17.5a7.5 7.5 0 0 1 15 0M12 7.2V5.6M10.4 5.6h3.2M2.5 20h19"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M19.5 14.6A8 8 0 1 1 9.4 4.5a6.4 6.4 0 0 0 10.1 10.1z"/><path d="M17.2 3.6l.6 1.5 1.5.6-1.5.6-.6 1.5-.6-1.5-1.5-.6 1.5-.6z"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.5 20.2a7.5 7.5 0 0 1 15 0"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5.5h16v10.5H9.5L5 20v-4H4z"/></symbol>
+    <symbol id="i-send" viewBox="0 0 24 24"><path d="M21 3 10.2 13.8M21 3l-6.8 18-4-7.2L3 9.8z"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><path d="M6 3.2h3.8l1.8 4.6-2.4 1.5a11.5 11.5 0 0 0 5.5 5.5l1.5-2.4 4.6 1.8V18a2.8 2.8 0 0 1-2.8 2.8A17.4 17.4 0 0 1 3.2 6 2.8 2.8 0 0 1 6 3.2z"/></symbol>
+  </defs>
+</svg>
+
+<!-- til tugmalari va musiqa — doim ko'rinadi -->
+<div class="lang" id="lang">
+  <button type="button" data-l="en">EN</button>
+  <button type="button" data-l="uz">UZ</button>
+  <button type="button" data-l="ru">RU</button>
+</div>
+<div class="music" id="music" hidden>
+  <button type="button" id="musicBtn" aria-label="Musiqa">
+    <svg class="mi-play" viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z"/></svg>
+    <svg class="mi-pause" viewBox="0 0 24 24"><path d="M8 5h3v14H8zM13 5h3v14h-3z"/></svg>
+  </button>
+  <span class="bars"><i></i><i></i><i></i><i></i></span>
+</div>
+<audio id="audio" loop preload="none"></audio>
+<canvas id="fx"></canvas>
+
+<!-- ============ MUQOVA ============ -->
+<section class="cover" id="cover">
+  <div class="cover-bg photo-hero"></div>
+  <div class="cover-shade"></div>
+  <div class="cover-in">
+    <p class="kick light" data-t="coverKick">Sizga taklifnoma keldi</p>
+    <h1 class="cover-names"><span class="nm-g">Jasurbek</span> <em>&amp;</em> <span class="nm-b">Mohinur</span></h1>
+    <p class="cover-date" id="coverDate">17 · 10 · 2026</p>
+    <p class="ayah-ar" lang="ar" dir="rtl">وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً</p>
+    <p class="ayah-tr" data-t="ayahTr">«Va o'rtangizda muhabbat va rahm-shafqat paydo qildi»</p>
+    <p class="ayah-src" data-t="ayahSrc">Rum surasi, 21</p>
+    <svg class="cover-heart"><use href="#i-heart"/></svg>
+
+    <div class="slider" id="slider" role="button" tabindex="0" aria-label="Ochish">
+      <span class="slider-fill" id="sliderFill"></span>
+      <span class="slider-txt"><span data-t="open">Ochish</span> <svg><use href="#i-arrow"/></svg></span>
+      <span class="knob" id="knob"><svg><use href="#i-lock"/></svg></span>
+    </div>
+  </div>
+</section>
+
+<main id="main">
+
+  <!-- ============ BIZ ============ -->
+  <header class="hero" id="s-hero">
+    <div class="hero-bg photo-hero"></div>
+    <div class="hero-shade"></div>
+    <div class="hero-in">
+      <p class="kick light rv" data-t="greet">Aziz va qadrli insonimiz!</p>
+      <p class="biz rv d1" data-t="biz">Biz</p>
+      <p class="hero-line rv d2" data-t="heroLine">Sizni to'yimizga taklif qilishdan mamnunmiz</p>
+    </div>
+  </header>
+
+  <!-- ============ TAKLIF KARTASI ============ -->
+  <section class="sec soft">
+    <div class="card narrow rv">
+      <p class="kick" data-t="dearGuest">Aziz mehmonimiz</p>
+      <p class="invite" data-t="invite">Sizni farzandlarimizning nikoh to'yi munosabati bilan bo'lib o'tadigan tantanali kechaga taklif etamiz</p>
+      <div class="divider"><svg><use href="#i-heart"/></svg></div>
+      <p class="kick" data-t="respect">Hurmat bilan,</p>
+      <p class="parents" id="parents"></p>
+      <p class="sig"><span class="nm-g">Jasurbek</span> &amp; <span class="nm-b">Mohinur</span></p>
+    </div>
+  </section>
+
+  <!-- ============ SANA + SANOQ + KALENDAR ============ -->
+  <section class="sec soft top0">
+    <div class="card narrow rv">
+      <p class="kick" data-t="date">Sana</p>
+      <p class="bigdate" id="bigDate">17 10 2026</p>
+      <div class="divider"><svg><use href="#i-heart"/></svg></div>
+      <p class="kick muted" data-t="left">To'ygacha qolgan vaqt</p>
+      <div class="count">
+        <div class="cb"><b id="cD">00</b><span data-t="d">kun</span></div>
+        <div class="cb"><b id="cH">00</b><span data-t="h">soat</span></div>
+        <div class="cb"><b id="cM">00</b><span data-t="m">daqiqa</span></div>
+        <div class="cb"><b id="cS">00</b><span data-t="s">soniya</span></div>
+      </div>
+      <p class="star">✦</p>
+      <p class="kick ink" id="calTitle">Oktabr 2026</p>
+      <table class="cal" id="cal"></table>
+      <p class="kick gold starts" id="starts">Boshlanishi 18:30</p>
+    </div>
+  </section>
+
+  <!-- ============ KUN TARTIBI ============ -->
+  <section class="sec plain">
+    <p class="kick muted center rv" data-t="program">Kun tartibi</p>
+    <ol class="prog" id="prog"></ol>
+  </section>
+
+  <!-- ============ GALEREYA ============ -->
+  <section class="sec dark gal-sec">
+    <p class="kick light center rv" data-t="memories">Bizning xotiralarimiz</p>
+    <h2 class="script center rv d1" data-t="galTitle">Xotira galereyasi</h2>
+    <div class="divider light rv d2"><svg><use href="#i-heart"/></svg></div>
+    <div class="gal" id="gal">
+      <figure><img src="images/1.jpg" alt="" loading="lazy"></figure>
+      <figure><img src="images/2.jpg" alt="" loading="lazy"></figure>
+      <figure><img src="images/3.jpg" alt="" loading="lazy"></figure>
+      <figure><img src="images/4.jpg" alt="" loading="lazy"></figure>
+      <figure><img src="images/5.jpg" alt="" loading="lazy"></figure>
+      <figure><img src="images/6.jpg" alt="" loading="lazy"></figure>
+    </div>
+  </section>
+
+  <!-- ============ TO'YXONA ============ -->
+  <section class="sec glass-sec">
+    <div class="glass-bg photo-hero"></div>
+    <div class="glass rv">
+      <p class="dots">✦ &nbsp;❖&nbsp; ✦</p>
+      <h2 class="glass-title" data-t="venueTitle">To'yxona</h2>
+      <div class="divider light"><svg><use href="#i-heart"/></svg></div>
+      <div class="halls">
+        <figure><img src="images/zal1.jpg" alt="" loading="lazy"></figure>
+        <figure><img src="images/zal2.jpg" alt="" loading="lazy"></figure>
+      </div>
+      <p class="script venue-name" id="venueName">Baxt saroyi</p>
+      <p class="venue-addr" id="venueAddr"><svg><use href="#i-pin"/></svg> <span></span></p>
+      <div class="pills">
+        <a class="pill" id="mapYandex" target="_blank" rel="noopener"><svg><use href="#i-pin"/></svg> <span>Yandex xarita</span></a>
+        <a class="pill" id="mapOpen" target="_blank" rel="noopener"><span data-t="openMap">Xaritada ochish</span> <svg><use href="#i-arrow"/></svg></a>
+      </div>
+      <p class="glad" data-t="glad">Sizni ko'rishdan mamnun bo'lamiz!</p>
+      <svg class="glass-heart"><use href="#i-heart"/></svg>
+    </div>
+  </section>
+
+  <!-- ============ JOYLASHUV ============ -->
+  <section class="sec glass-sec top0">
+    <div class="glass-bg photo-hero"></div>
+    <div class="glass rv">
+      <p class="badge">✦ ✦ ✦</p>
+      <h2 class="glass-title" data-t="locTitle">Joylashuv</h2>
+      <p class="kick light" data-t="locSub">Sevgi va nafosat uchrashadigan joy</p>
+      <div class="map"><iframe id="mapFrame" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Xarita"></iframe></div>
+      <div class="pills">
+        <a class="pill" id="mapYandex2" target="_blank" rel="noopener"><svg><use href="#i-pin"/></svg> <span>Yandex xarita</span></a>
+        <a class="pill" id="mapGoogle" target="_blank" rel="noopener"><svg><use href="#i-pin"/></svg> <span>Google Maps</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ R.S.V.P. ============ -->
+  <section class="sec soft" id="s-rsvp">
+    <p class="kick gold center rv">✦ R.S.V.P. ✦</p>
+    <h2 class="title center rv d1" data-t="rsvpTitle">Iltimos, ishtirokingizni tasdiqlang</h2>
+    <p class="kick muted center rv d2" data-t="rsvpSub">Biz bilan bo'ling</p>
+    <div class="divider rv d2"><svg><use href="#i-heart"/></svg></div>
+
+    <form class="card form rv" id="rsvpForm" autocomplete="off">
+      <label><span data-t="guestName">Mehmon ismi</span><input name="name" required data-ph="phName" placeholder="Ismingizni kiriting"></label>
+      <p class="lbl" data-t="attend">Qatnashasizmi?</p>
+      <div class="radios">
+        <label class="rd"><input type="radio" name="attend" value="yes" checked><span data-t="yes">Ha, albatta boraman!</span></label>
+        <label class="rd"><input type="radio" name="attend" value="no"><span data-t="no">Afsus, kela olmayman</span></label>
+      </div>
+      <label><span data-t="guests">Necha kishi bo'lasiz?</span>
+        <select name="guests"><option>1</option><option>2</option><option>3</option><option>4</option><option>5+</option></select>
+      </label>
+      <label><span data-t="msg">Xabar</span><textarea name="msg" rows="3" data-ph="phMsg" placeholder="Kuyov-kelin bilan xabar ulashing..."></textarea></label>
+      <button class="gbtn" type="submit" data-t="sendReply">Javob yuborish</button>
+    </form>
+
+    <div class="card sent" id="sent">
+      <svg class="sent-heart"><use href="#i-heart"/></svg>
+      <h3 data-t="thanks">Rahmat! Javobingiz qabul qilindi</h3>
+      <p data-t="sendTo">Endi javobni kelin-kuyovga yuboring:</p>
+      <div class="pills dark">
+        <a class="pill" id="sendTg" target="_blank" rel="noopener">Telegram</a>
+        <a class="pill" id="sendWa" target="_blank" rel="noopener">WhatsApp</a>
+      </div>
+      <button class="link" type="button" id="again" data-t="again">Yana javob qo'shish</button>
+    </div>
+  </section>
+
+  <!-- ============ MEHMONLAR KITOBI ============ -->
+  <section class="sec soft top0" id="s-book">
+    <p class="kick gold center rv"><span>✦</span> <span data-t="bookKick">Mehmonlar kitobi</span> <span>✦</span></p>
+    <h2 class="title center rv d1" data-t="bookTitle">Mehmonlar kitobi</h2>
+
+    <form class="card form rv" id="bookForm" autocomplete="off">
+      <label class="ico-in"><svg><use href="#i-user"/></svg><input name="name" required data-ph="phName" placeholder="Ismingizni kiriting"></label>
+      <label class="ico-in"><svg><use href="#i-chat"/></svg><textarea name="msg" rows="4" required data-ph="phWish" placeholder="Xabaringizni yozing"></textarea></label>
+      <button class="gbtn" type="submit"><span data-t="sendWish">Xabar yuborish</span> <svg><use href="#i-send"/></svg></button>
+    </form>
+
+    <div class="wall" id="wall"></div>
+  </section>
+
+  <!-- ============ YAKUN ============ -->
+  <section class="closing">
+    <div class="closing-bg photo-hero"></div>
+    <div class="closing-shade"></div>
+    <div class="closing-in rv">
+      <p class="kick light" data-t="gift1">Sizning ishtirokingiz —</p>
+      <p class="closing-big" data-t="gift2">biz uchun eng qimmatli sovg'a</p>
+      <p class="closing-mark">!</p>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div class="divider light"><svg><use href="#i-heart"/></svg></div>
+    <p class="script foot-names"><span class="nm-g">Jasurbek</span> &amp; <span class="nm-b">Mohinur</span></p>
+    <p class="kick muted" data-t="withLove">Sevgi bilan</p>
+    <div class="foot-tel" id="footTel"></div>
+  </footer>
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>

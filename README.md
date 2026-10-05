@@ -1,4 +1,4 @@
-# To'y taklifnomasi — ikki variant
+# To'y taklifnomasi — uch variant
 
 Statik sayt. Build qilish, o'rnatish kerak emas — `index.html` ni ochsangiz ishlaydi.
 
@@ -6,6 +6,7 @@ Statik sayt. Build qilish, o'rnatish kerak emas — `index.html` ni ochsangiz is
 |---|---|
 | [`toyga-marhamat/`](toyga-marhamat/) | Ikki oltin uzuk uchib kelib bir-biriga ilashadi, girih yulduzi chiziladi |
 | [`toyga-marhamat-foto/`](toyga-marhamat-foto/) | Kelin-kuyov surati koshin plitkalaridan yig'iladi, surat sayt foni bo'lib qoladi |
+| [`toyga-marhamat-klassik/`](toyga-marhamat-klassik/) | Klassik oq-oltin: to'liq ekranli surat, surib ochiladigan qulf, kalendar, mehmonlar kitobi |
 
 Ikkalasida ham: milliy dizayn (Samarqand koshini — ko'k/feruza/oltin, girih, islimi, ravoq),
 uch til (UZ / RU / EN), 12 bo'lim, sanoq, xarita, galereya, RSVP forma, tilaklar devori,
