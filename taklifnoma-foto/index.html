@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Taklifnoma — Jasurbek &amp; Mohinur</title>
+<meta name="description" content="To'y marosimiga taklifnoma">
+<meta name="theme-color" content="#0a1a15">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Italiana&family=Pinyon+Script&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="locked">
+
+<!-- ===== SVG IKONKALAR ===== -->
+<svg class="sprite" aria-hidden="true">
+  <defs>
+    <symbol id="ic-arch" viewBox="0 0 24 24"><path d="M3 21h18M5.5 21V11.5a6.5 6.5 0 0 1 13 0V21M12 2.2v2.6M9.6 21v-4.6a2.4 2.4 0 0 1 4.8 0V21"/></symbol>
+    <symbol id="ic-cup" viewBox="0 0 24 24"><path d="M6.4 3.5h11.2l-.9 7.2a4.7 4.7 0 0 1-9.4 0zM12 15.6V20M8.2 20.4h7.6M17.4 5.6h1.8a2.2 2.2 0 0 1 0 4.4h-1.4"/></symbol>
+    <symbol id="ic-rings" viewBox="0 0 24 24"><circle cx="9.2" cy="14.4" r="5.4"/><circle cx="15.2" cy="12.4" r="5.4"/><path d="M13.6 3.4h3.6l1.6 2.6-3.4 2.4-3.4-2.4z"/></symbol>
+    <symbol id="ic-music" viewBox="0 0 24 24"><path d="M9.4 17.6V4.8l10-2.2v12.6"/><circle cx="6.6" cy="18" r="2.8"/><circle cx="16.6" cy="15.6" r="2.8"/></symbol>
+    <symbol id="ic-cake" viewBox="0 0 24 24"><path d="M3.6 21h16.8v-6.6a2.2 2.2 0 0 0-2.2-2.2H5.8a2.2 2.2 0 0 0-2.2 2.2zM3.6 16.4c2 0 2 1.6 4.2 1.6s2.2-1.6 4.2-1.6 2 1.6 4.2 1.6 2.2-1.6 4.2-1.6M12 9.2V6M12 3.2l1 1.8-1 1.2-1-1.2z"/></symbol>
+    <symbol id="ic-phone" viewBox="0 0 24 24"><path d="M6 3.2h3.8l1.8 4.6-2.4 1.5a11.5 11.5 0 0 0 5.5 5.5l1.5-2.4 4.6 1.8V18a2.8 2.8 0 0 1-2.8 2.8A17.4 17.4 0 0 1 3.2 6 2.8 2.8 0 0 1 6 3.2z"/></symbol>
+    <symbol id="ic-car" viewBox="0 0 24 24"><path d="M3 13.4l2-5.2a2.4 2.4 0 0 1 2.2-1.5h9.6a2.4 2.4 0 0 1 2.2 1.5l2 5.2v5h-3.2v-2.2H6.2v2.2H3z"/><circle cx="7" cy="15.6" r="1.2"/><circle cx="17" cy="15.6" r="1.2"/></symbol>
+    <symbol id="ic-pin" viewBox="0 0 24 24"><path d="M12 21.2s6.8-6.6 6.8-11A6.8 6.8 0 1 0 5.2 10.2c0 4.4 6.8 11 6.8 11z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+    <symbol id="ic-heart" viewBox="0 0 24 24"><path d="M12 20.4C6.2 16.4 3.2 13.3 3.2 9.7A4.7 4.7 0 0 1 12 7a4.7 4.7 0 0 1 8.8 2.7c0 3.6-3 6.7-8.8 10.7z"/></symbol>
+    <symbol id="ic-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 6.6V12l3.6 2.2"/></symbol>
+    <!-- ravoq (peshtoq) shakli — suratlar va kartalar uchun -->
+    <clipPath id="ravoq" clipPathUnits="objectBoundingBox">
+      <path d="M0,1 L0,0.46 C0,0.26 0.28,0.11 0.5,0 C0.72,0.11 1,0.26 1,0.46 L1,1 Z"/>
+    </clipPath>
+  </defs>
+</svg>
+
+<!-- ===== OCHILISH ===== -->
+<div class="intro" id="intro">
+  <div class="curtain curtain-l"><span class="c-art"></span></div>
+  <div class="curtain curtain-r"><span class="c-art"></span></div>
+  <div class="seam" id="seam"></div>
+  <canvas id="fx"></canvas>
+
+  <!-- boshlash paneli -->
+  <div class="start-panel" id="startPanel">
+    <div class="sp-rule"></div>
+    <p class="sp-label">Siz uchun maxsus taklifnoma</p>
+    <h1 class="sp-names">
+      <span class="foil n1">Jasurbek</span>
+      <span class="amp">&amp;</span>
+      <span class="foil n2">Mohinur</span>
+    </h1>
+    <div class="flourish sp-fl"></div>
+    <p class="sp-date">17 &middot; 10 &middot; 2026</p>
+
+    <button class="seal" id="startBtn" aria-label="Taklifnomani ochish">
+      <span class="seal-orbit"></span>
+      <svg class="seal-girih" viewBox="0 0 200 200" aria-hidden="true">
+        <g fill="none" stroke="rgba(232,200,125,.42)" stroke-width="1" stroke-linejoin="round">
+          <path d="M100.0 26.0 L120.3 51.0 L152.3 47.7 L149.0 79.7 L174.0 100.0 L149.0 120.3 L152.3 152.3 L120.3 149.0 L100.0 174.0 L79.7 149.0 L47.7 152.3 L51.0 120.3 L26.0 100.0 L51.0 79.7 L47.7 47.7 L79.7 51.0Z"/>
+          <path d="M100.0 44.0 L115.3 63.0 L139.6 60.4 L137.0 84.7 L156.0 100.0 L137.0 115.3 L139.6 139.6 L115.3 137.0 L100.0 156.0 L84.7 137.0 L60.4 139.6 L63.0 115.3 L44.0 100.0 L63.0 84.7 L60.4 60.4 L84.7 63.0Z"/>
+        </g>
+      </svg>
+      <span class="seal-disc">
+        <span class="seal-mono">J<i>&amp;</i>M</span>
+      </span>
+    </button>
+    <p class="sp-hint">Muhrni bosing</p>
+  </div>
+
+  <!-- MOZAIKA: surat koshin plitkalaridan yig'iladi -->
+  <div class="mosaic" id="mosaic" aria-hidden="true"></div>
+  <div class="mos-flash" id="mosFlash"></div>
+  <div class="mos-text" id="mosText">
+    <p class="mos-names">Jasurbek <span>&amp;</span> Mohinur</p>
+    <p class="mos-sub">Baxt bilan</p>
+  </div>
+
+  <button class="skip" id="skipBtn">O'tkazib yuborish &rarr;</button>
+</div>
+
+<!-- ===== ASOSIY ===== -->
+<div class="grain" aria-hidden="true"></div>
+<canvas id="petals"></canvas>
+
+<button class="music-btn" id="musicBtn" title="Musiqa" aria-label="Musiqa">
+  <span class="eq"><i></i><i></i><i></i><i></i></span>
+</button>
+<audio id="audio" loop preload="none"></audio>
+
+<nav class="dots" id="dots" aria-label="Bo'limlar"></nav>
+
+<main id="main">
+
+  <!-- HERO -->
+  <header class="hero" id="s-hero" data-nav="Bosh sahifa">
+    <div class="hero-bg" data-par="0.3"></div>
+    <div class="hero-vign"></div>
+    <svg class="arch-frame" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M1.5 100 L1.5 44 C1.5 23 26 6.5 50 1 C74 6.5 98.5 23 98.5 44 L98.5 100"
+            fill="none" stroke="rgba(201,162,39,.34)" stroke-width="1" vector-effect="non-scaling-stroke"/>
+      <path d="M5 100 L5 45.5 C5 25.5 28 10 50 4.8 C72 10 95 25.5 95 45.5 L95 100"
+            fill="none" stroke="rgba(201,162,39,.16)" stroke-width="1" vector-effect="non-scaling-stroke"/>
+    </svg>
+    <div class="hero-in">
+      <div class="crest-sm rv">
+        <svg viewBox="0 0 120 120" aria-hidden="true">
+          <g fill="none" stroke="rgba(201,162,39,.5)" stroke-width="1" stroke-linejoin="round">
+            <path d="M60.0 14.0 L72.6 29.5 L92.5 27.5 L90.5 47.4 L106.0 60.0 L90.5 72.6 L92.5 92.5 L72.6 90.5 L60.0 106.0 L47.4 90.5 L27.5 92.5 L29.5 72.6 L14.0 60.0 L29.5 47.4 L27.5 27.5 L47.4 29.5Z"/>
+          </g>
+          <text x="60" y="72">J&amp;M</text>
+        </svg>
+      </div>
+      <p class="pre rv d1">Bismillahir Rohmanir Rohiym</p>
+      <h1 class="big-names">
+        <span class="bn foil rv d2">Jasurbek</span>
+        <span class="amp2 rv d3">&amp;</span>
+        <span class="bn foil rv d4">Mohinur</span>
+      </h1>
+      <div class="flourish light rv d5"></div>
+      <p class="hero-sub rv d5">Turmush qurish marosimimizga sizni chin dildan taklif qilamiz</p>
+      <div class="hero-date rv d6">
+        <span>Shanba</span><b>17</b><span>Oktabr 2026</span>
+      </div>
+      <a class="scroll-cue" href="#s-oyat"><i></i>Pastga suring</a>
+    </div>
+  </header>
+
+  <!-- OYAT -->
+  <section class="sec quote-sec" id="s-oyat" data-nav="Oyat">
+    <div class="wrap narrow">
+      <div class="flourish rv"></div>
+      <p class="ayah rv d1">Sizlarga o'zingizdan juft yaratib, ularga xotirjam bo'lishingiz uchun o'rtangizda muhabbat va rahm-shafqat paydo qilgani ham Uning oyatlaridandir.</p>
+      <p class="ayah-src rv d2">Rum surasi, 21-oyat</p>
+    </div>
+  </section>
+
+  <!-- SURAT LENTASI 1 -->
+  <section class="photo-band pb1">
+    <div class="pb-veil"></div>
+    <p class="pb-quote rv">Ikki yurak &mdash; bir taqdir</p>
+  </section>
+
+  <!-- OILA -->
+  <section class="sec" id="s-oila" data-nav="Oila">
+    <div class="wrap">
+      <h2 class="title rv">Taklif qiluvchilar</h2>
+      <p class="subtitle rv d1">Farzandlarimiz baxtini siz bilan bo'lishishdan mamnunmiz</p>
+      <div class="cards2">
+        <div class="card rv d2">
+          <span class="card-cap">Kuyov ota-onasi</span>
+          <h3>Baxtiyor aka<br>&amp; Zulfiya opa</h3>
+          <p>o'g'illari <b>Jasurbek</b>ning<br>to'y marosimiga</p>
+        </div>
+        <div class="card-mid rv d3"><svg class="ico lg"><use href="#ic-heart"/></svg></div>
+        <div class="card rv d4">
+          <span class="card-cap">Kelin ota-onasi</span>
+          <h3>Rustam aka<br>&amp; Dilnoza opa</h3>
+          <p>qizlari <b>Mohinur</b>ning<br>to'y marosimiga</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COUNTDOWN -->
+  <section class="sec dark count-sec" id="s-vaqt" data-nav="Vaqt">
+    <div class="wrap">
+      <h2 class="title rv">Baxtli kungacha</h2>
+      <div class="count rv d1">
+        <div class="cbox"><b id="cD">00</b><span>kun</span></div>
+        <div class="cbox"><b id="cH">00</b><span>soat</span></div>
+        <div class="cbox"><b id="cM">00</b><span>daqiqa</span></div>
+        <div class="cbox"><b id="cS">00</b><span>soniya</span></div>
+      </div>
+      <p class="count-note rv d2" id="countNote">Sizni kutib qolamiz</p>
+    </div>
+  </section>
+
+  <!-- DASTUR -->
+  <section class="sec" id="s-dastur" data-nav="Dastur">
+    <div class="wrap">
+      <h2 class="title rv">Marosim dasturi</h2>
+      <p class="subtitle rv d1">17-oktabr, shanba</p>
+      <div class="prog">
+        <div class="prog-item rv"><span class="pi-ico"><svg class="ico"><use href="#ic-arch"/></svg></span><span class="pi-time">10:00</span><h3>Nikoh o'qilishi</h3><p>Jome masjidida, yaqin qarindoshlar ishtirokida</p></div>
+        <div class="prog-item rv d1"><span class="pi-ico"><svg class="ico"><use href="#ic-cup"/></svg></span><span class="pi-time">17:30</span><h3>Mehmonlarni kutib olish</h3><p>Registratsiya, fotozona va yengil gazaklar</p></div>
+        <div class="prog-item rv d2"><span class="pi-ico"><svg class="ico"><use href="#ic-rings"/></svg></span><span class="pi-time">18:30</span><h3>Kelin-kuyov kirishi</h3><p>Rasmiy qism va ota-onalar duosi</p></div>
+        <div class="prog-item rv d3"><span class="pi-ico"><svg class="ico"><use href="#ic-music"/></svg></span><span class="pi-time">19:00</span><h3>Ziyofat va kontsert</h3><p>Milliy taomlar, jonli ijro va raqslar</p></div>
+        <div class="prog-item rv d4"><span class="pi-ico"><svg class="ico"><use href="#ic-cake"/></svg></span><span class="pi-time">22:00</span><h3>Tort va salyut</h3><p>Kechaning eng shirin yakuni</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MANZIL -->
+  <section class="sec dark" id="s-manzil" data-nav="Manzil">
+    <div class="wrap">
+      <h2 class="title rv">To'y manzili</h2>
+      <div class="venue rv d1">
+        <h3 class="venue-name">&laquo;BAXT SAROYI&raquo; to'yxonasi</h3>
+        <p class="venue-addr"><svg class="ico sm"><use href="#ic-pin"/></svg> Toshkent shahri, Yunusobod tumani, Amir Temur ko'chasi 108-uy</p>
+        <div class="venue-meta">
+          <span><svg class="ico sm"><use href="#ic-phone"/></svg> +998 90 123 45 67</span>
+          <span><svg class="ico sm"><use href="#ic-car"/></svg> Bepul parkovka</span>
+          <span><svg class="ico sm"><use href="#ic-clock"/></svg> 17:30 dan</span>
+        </div>
+        <div class="btns">
+          <a class="btn" id="mapYandex" target="_blank" rel="noopener">Yandex Xaritada ochish</a>
+          <a class="btn ghost" id="mapGoogle" target="_blank" rel="noopener">Google Maps</a>
+        </div>
+      </div>
+      <div class="map rv d2"><iframe id="mapFrame" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Xarita"></iframe></div>
+    </div>
+  </section>
+
+  <!-- GALEREYA -->
+  <section class="sec" id="s-galereya" data-nav="Suratlar">
+    <div class="wrap">
+      <h2 class="title rv">Suratlarimiz</h2>
+      <p class="subtitle rv d1">Birga o'tkazgan eng yorqin lahzalar</p>
+      <div class="gal">
+        <figure class="g tall rv"><img src="images/1.jpg" alt="" loading="lazy"><figcaption>Birinchi uchrashuv</figcaption></figure>
+        <figure class="g rv d1"><img src="images/2.jpg" alt="" loading="lazy"><figcaption>Fotiha kuni</figcaption></figure>
+        <figure class="g rv d2"><img src="images/3.jpg" alt="" loading="lazy"><figcaption>Sayohatda</figcaption></figure>
+        <figure class="g rv d3"><img src="images/4.jpg" alt="" loading="lazy"><figcaption>Uzuk taqish</figcaption></figure>
+        <figure class="g tall rv d4"><img src="images/5.jpg" alt="" loading="lazy"><figcaption>Oilamiz bilan</figcaption></figure>
+        <figure class="g rv d5"><img src="images/6.jpg" alt="" loading="lazy"><figcaption>Biz</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- DRESS -->
+  <section class="sec" id="s-dress" data-nav="Kiyim">
+    <div class="wrap narrow">
+      <h2 class="title rv">Kiyim uslubi</h2>
+      <p class="subtitle rv d1">Bayramimiz ranglariga mos kiyinsangiz, suratlarimiz yanada chiroyli chiqadi</p>
+      <div class="swatches rv d2">
+        <div class="sw"><i style="--c:#0e3b30"></i><span>To'q zumrad</span></div>
+        <div class="sw"><i style="--c:#c9a227"></i><span>Oltin</span></div>
+        <div class="sw"><i style="--c:#f3e9d6"></i><span>Krem</span></div>
+        <div class="sw"><i style="--c:#8c3b4a"></i><span>Marsala</span></div>
+      </div>
+      <p class="mini rv d3">Iltimos, oq rangdan (kelin rangi) voz keching</p>
+    </div>
+  </section>
+
+  <!-- SURAT LENTASI 2 -->
+  <section class="photo-band pb2">
+    <div class="pb-veil"></div>
+    <p class="pb-quote rv">Sizni kutamiz</p>
+  </section>
+
+  <!-- FAQ -->
+  <section class="sec dark" id="s-faq" data-nav="Eslatma">
+    <div class="wrap">
+      <h2 class="title rv">Muhim eslatmalar</h2>
+      <div class="faq">
+        <div class="fq rv"><button type="button">Necha kishi bilan kelsam bo'ladi?</button><div class="fa"><p>Taklifnomada ko'rsatilgan joylar soni bo'yicha. Tasdiqlash shaklida mehmonlar sonini yozib qoldirsangiz, stolni tayyorlab qo'yamiz.</p></div></div>
+        <div class="fq rv d1"><button type="button">Bolalar bilan borsak bo'ladimi?</button><div class="fa"><p>Albatta. Bolalar uchun alohida burchak va shirinliklar tayyorlanadi — faqat sonini oldindan bildirsangiz kifoya.</p></div></div>
+        <div class="fq rv d2"><button type="button">Sovg'a haqida</button><div class="fa"><p>Eng katta sovg'a — sizning ishtirokingiz. Agar sovg'a bermoqchi bo'lsangiz, yosh oila uchun konvert eng qulay variant bo'ladi.</p></div></div>
+        <div class="fq rv d3"><button type="button">Qachon yetib borish kerak?</button><div class="fa"><p>Mehmonlarni 17:30 dan kutib olamiz. Rasmiy qism 18:30 da boshlanadi — shu vaqtgacha yetib kelishingizni so'raymiz.</p></div></div>
+        <div class="fq rv d4"><button type="button">Surat va videoga olish</button><div class="fa"><p>Bemalol suratga oling. Faqat rasmiy qism paytida professional suratchilarga xalaqit bermaslikni so'raymiz. Suratlaringizni <b>#JasurbekMohinur2026</b> xeshtegi bilan ulashing.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RSVP -->
+  <section class="sec rsvp-sec" id="s-rsvp" data-nav="Tasdiqlash">
+    <div class="wrap narrow">
+      <h2 class="title rv">Ishtirokni tasdiqlash</h2>
+      <p class="subtitle rv d1">Iltimos, <b>10-oktabr</b>gacha javob bering</p>
+      <form class="form rv d2" id="rsvpForm" autocomplete="off">
+        <label>Ism familiyangiz<input type="text" name="name" required placeholder="Masalan: Alisher Tursunov"></label>
+        <div class="row">
+          <label>Kim tomondan<select name="side"><option>Kuyov tomondan</option><option>Kelin tomondan</option><option>Ikkala tomondan</option></select></label>
+          <label>Mehmonlar soni<select name="guests"><option>1</option><option>2</option><option>3</option><option>4</option><option>5+</option></select></label>
+        </div>
+        <div class="radios">
+          <label class="rd"><input type="radio" name="attend" value="Kelaman" checked><span>Albatta kelaman</span></label>
+          <label class="rd"><input type="radio" name="attend" value="Kela olmayman"><span>Afsus, kela olmayman</span></label>
+        </div>
+        <label>Tilak yoki izoh<textarea name="msg" rows="3" placeholder="Yosh oilaga tilaklaringiz..."></textarea></label>
+        <button type="submit" class="btn wide">Javobni yuborish</button>
+      </form>
+      <div class="sent" id="sent">
+        <svg class="ico lg"><use href="#ic-heart"/></svg>
+        <h3>Rahmat, javobingiz qabul qilindi</h3>
+        <p>Tilagingiz quyidagi &laquo;Tilaklar devori&raquo;da paydo bo'ldi. Endi javobni bizga yuboring:</p>
+        <div class="btns">
+          <a class="btn" id="sendTg" target="_blank" rel="noopener">Telegram orqali</a>
+          <a class="btn ghost" id="sendWa" target="_blank" rel="noopener">WhatsApp orqali</a>
+        </div>
+        <button class="link-btn" id="againBtn" type="button">Yana bir javob qo'shish</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- TILAKLAR -->
+  <section class="sec dark" id="s-tilak" data-nav="Tilaklar">
+    <div class="wrap">
+      <h2 class="title rv">Tilaklar devori</h2>
+      <p class="subtitle rv d1">Mehmonlarimiz qoldirgan iliq so'zlar</p>
+      <div class="wishes" id="wishes"></div>
+      <p class="wish-cta rv"><a href="#s-rsvp">Siz ham tilak qoldiring &rarr;</a></p>
+    </div>
+  </section>
+
+  <!-- ALOQA -->
+  <section class="sec" id="s-aloqa" data-nav="Aloqa">
+    <div class="wrap narrow">
+      <h2 class="title rv">Savollaringiz bormi?</h2>
+      <div class="contacts rv d1">
+        <a class="ct" href="tel:+998901234567"><svg class="ico"><use href="#ic-phone"/></svg><b>Jasurbek</b><span>+998 90 123 45 67</span></a>
+        <a class="ct" href="tel:+998911234567"><svg class="ico"><use href="#ic-phone"/></svg><b>Mohinur</b><span>+998 91 123 45 67</span></a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div class="flourish light"></div>
+    <p class="foot-names">Jasurbek &amp; Mohinur</p>
+    <p class="foot-date">17 Oktabr 2026 &middot; Toshkent</p>
+    <p class="foot-thanks">Bizning baxtli kunimizni siz bilan bo'lishishdan mamnunmiz</p>
+  </footer>
+</main>
+
+<script src="app.js"></script>
+<script src="i18n.js"></script>
+</body>
+</html>
