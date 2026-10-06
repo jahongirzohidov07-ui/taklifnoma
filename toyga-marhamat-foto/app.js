@@ -82,6 +82,7 @@ const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
   if (d) CONFIG.dateISO = /([+-]\d\d:\d\d|Z)$/.test(d) ? d : d.slice(0, 16) + ":00+05:00";
   if (get("auto") === "1") CONFIG.musicAutoplay = true;
   CONFIG.urlLang = get("til");
+  CONFIG.noProgram = get("dastur") === "0";          // admin: «Kun tartibini yashirish»
   // suratlar — faqat http(s) havolalar qabul qilinadi
   const okUrl = u => (u && /^https?:\/\//i.test(u.trim())) ? u.trim() : null;
   CONFIG.photo = okUrl(get("foto")) || CONFIG.photo || null;
@@ -229,11 +230,21 @@ function applyPhotos() {
   if (sec) sec.hidden = CONFIG.gallery.length === 0;
 }
 
+/* Kun tartibi bo'limini yashirish (admin paneldagi belgi) */
+function applyProgram() {
+  if (!CONFIG.noProgram) return;
+  const s = $("#s-dastur");
+  if (!s) return;
+  s.hidden = true;
+  s.removeAttribute("data-nav");          // o'ng tarafdagi nuqtalar ro'yxatidan ham chiqib ketadi
+}
+
 (function applyConfig() {
   const mt = $("#meetText"); if (mt) mt.textContent = CONFIG.meetText;
   const wc = $("#walkCap");  if (wc && CONFIG.walkText) wc.textContent = CONFIG.walkText;
   const ms = $(".mos-sub");  if (ms) ms.textContent = CONFIG.meetText;
   applyPhotos();
+  applyProgram();
   applyNames();
   applyDates("uz");
 

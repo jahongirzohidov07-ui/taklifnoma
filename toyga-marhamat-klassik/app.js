@@ -63,6 +63,7 @@ const CONFIG = {
   if (d) CONFIG.dateISO = /([+-]\d\d:\d\d|Z)$/.test(d) ? d : d.slice(0, 16) + ":00+05:00";
   if (get("auto") === "1") CONFIG.musicAutoplay = true;
   CONFIG.urlLang = get("til");
+  CONFIG.noProgram = get("dastur") === "0";          // admin: «Kun tartibini yashirish»
   // suratlar — faqat http(s) havolalar qabul qilinadi
   const okUrl = u => (u && /^https?:\/\//i.test(u.trim())) ? u.trim() : null;
   CONFIG.photo = okUrl(get("foto")) || CONFIG.photo || null;
@@ -575,9 +576,17 @@ $("#bookForm").addEventListener("submit", e => {
   burst(innerWidth / 2, Math.max(80, r.top), 80);
 });
 
+/* Kun tartibi bo'limini yashirish (admin paneldagi belgi) */
+function applyProgram() {
+  if (!CONFIG.noProgram) return;
+  const s = $("#prog") && $("#prog").closest("section");
+  if (s) s.hidden = true;
+}
+
 /* ============ ISHGA TUSHIRISH ============ */
 applyStatic();
 applyPhotos();
+applyProgram();
 let startLang = TEXTS[CONFIG.urlLang] ? CONFIG.urlLang : null;
 if (!startLang) { try { startLang = localStorage.getItem("taklifnoma_lang"); } catch (e) {} }
 applyLang(startLang || "uz");

@@ -283,6 +283,7 @@ textarea{resize:vertical;line-height:1.5}
         <label><input type="radio" name="til" value="ru"><span>Русский</span></label>
         <label><input type="radio" name="til" value="en"><span>English</span></label>
       </div>
+      <label class="check" style="margin-top:6px"><input type="checkbox" name="nodastur"> Kun tartibini ko'rsatma (bo'limni butunlay yashiradi)</label>
     </fieldset>
 
     <button class="go" type="submit">Tayyor — havola yaratish</button>
@@ -353,6 +354,7 @@ function save() {
   const o = {};
   new FormData(f).forEach((v, k) => o[k] = v);
   o.auto = f.auto.checked;
+  o.nodastur = f.nodastur.checked;
   try { localStorage.setItem(KEY, JSON.stringify(o)); } catch (e) {}
 }
 function load() {
@@ -664,6 +666,7 @@ function build(over) {
   const mp3 = over.mp3 || v("mp3");
   if (f.mus.value === "mp3" && mp3) p.set("mp3", mp3);
   if (f.auto.checked) p.set("auto", "1");
+  if (f.nodastur.checked) p.set("dastur", "0");
   if (f.til.value !== "uz") p.set("til", f.til.value);
   return BASE + f.v.value + "/?" + p.toString();
 }
